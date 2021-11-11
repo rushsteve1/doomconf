@@ -1,0 +1,182 @@
+#+TITLE: D lang & Trash-D
+#+AUTHOR: rushsteve1
+#+EMAIL: rushsteve1@rushsteve1.us
+#+OPTIONS: toc:nil num:nil
+#+REVEAL_THEME: beige
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+
+* Meta Stuff
+This talk is in two parts: First I'll go over the D programming language and
+some neat parts of it. Then in the second half I'll go over a command line tool
+I wrote in D and what's interesting about that and nice.
+
+#+REVEAL: split
+
+[[https://doomconf.netlify.app/rushsteve1/trash-d][doomconf.netlify.app/rushsteve1/trash-d]]
+
+[[https://doomconf.netlify.app/rushsteve1/trash-d.org][doomconf.netlify.app/rushsteve1/trash-d.org]]
+
+* The D programming language
+[[https://dlang.org][dlang.org]]
+
+A =C= compatible and optionally garbage-collected systems programming language.
+
+First released in 2001 and continually updated since then.
+
+Basically C++ but better.
+
+#+REVEAL: split
+
+https://dlang.org/images/dlogo_opengraph.png
+
+** Notable Features
+#+BEGIN_NOTES
+The D documentation has a whole section called "D's Gems" that go over some of
+the really nice features of the language.
+
+But here's a selection of features that I really like...
+#+END_NOTES
+
+#+ATTR_REVEAL: :frag (t)
+- Actual strings
+- Dynamic arrays and hashmaps
+- Invariants and contract programming
+- [[https://tour.dlang.org/tour/en/gems/uniform-function-call-syntax-ufcs][Uniform Function Call Syntax]] (UFCS)
+- Very easy ~C~ and ~C++~ interop
+- Lambdas and higher-order functions
+- Unit testing built-in
+
+#+ATTR_REVEAL: :frag t
+... and more!
+
+** The Standard Library
+#+BEGIN_NOTES
+D has a really great standard library named "Phobos".
+The whole language has a Mars theme since the company that originally created it
+is named "Digital Mars".
+#+END_NOTES
+
+#+ATTR_REVEAL: :frag (t)
+- Ranges and lazy iterators
+- SQLite bindings
+- /Lots/ of utility functions
+- Green threads / Continuations
+- CLI options parser
+
+#+ATTR_REVEAL: :frag t
+And all the sane normal things that C doesn't have.
+
+** Weird Bits
+#+BEGIN_NOTES
+Every language has it's oddities and rough parts, and D is of course no
+different. But they're not that bad when looking at the competition.
+#+END_NOTES
+
+#+ATTR_REVEAL: :frag (t)
+- Unicode support is odd (~char~ and ~dchar~)
+- Classes vs Structs
+- It's a Big language
+- Multiple compilers
+
+#+ATTR_REVEAL: :frag t
+Overall not that many funky parts compared to say C++
+
+** The Ecosystem
+#+ATTR_REVEAL: :frag t
+About as dead as it can get without being totally dead.
+
+#+ATTR_REVEAL: :frag t
+It's a real shame, but the language never really took off. However in recent
+years with renewed interest in systems programming there has been some movement.
+
+** Why _You_ Should Care
+
+#+ATTR_REVEAL: :frag (t)
+- If you're looking for something...
+  #+ATTR_REVEAL: :frag (t)
+  - nicer than C/C++
+  - less daunting than Rust
+  - less spartan than Go
+- If you think systems programming is neat.
+- If you just want to learn a cool language and use some rare language features.
+
+#+ATTR_REVEAL: :frag t
+... then give D a try!
+
+* What is ~trash-d~
+~trash-d~ is a standalone CLI tool that's /almost/ completely compatible with
+~rm~ but instead of permanently deleting a file it moves it to the trash bin.
+
+[[github:rushsteve1/trash-d][rushsteve1/trash-d]]
+
+** Why Did I Make This?
+This is something I've wanted for a long time but never got around to making or
+finding.
+
+#+ATTR_REVEAL: :frag t
+One day last week or so @tecosaur was talking about how he accidentally =rm
+-rf='d his music folder, and I made a comment saying that making a version that
+uses the trash bin should be pretty easy.
+
+#+ATTR_REVEAL: :frag t
+It was not.
+
+** Why be Compatible With ~rm~?
+The entire point of this project was to create a tool that you could ~alias
+rm=trash~ and not even notice the difference, while still gaining all of the
+benefits of using the trash bin.
+
+#+REVEAL: split
+This was ultimately quite tricky. ~rm~ doesn't have many flags, but their
+interaction and exact results required a lot of figuring out.
+
+#+ATTR_REVEAL: :frag t
+On top of that I  even made the error messages compatible. On the off chance
+someone's parsing those...
+
+** Why are Versions Missing?
+#+BEGIN_NOTES
+Some of the sharp-eyed among you have already taken a look at the GitHub
+releases page and noticed there are some gaps
+#+END_NOTES
+
+#+ATTR_REVEAL: :frag t
+If you check the git history the missing numbers actually exist in code. But
+they were superseded so fast I never got around to making a release page.
+
+#+ATTR_REVEAL: :frag t
+Also I bump the number every time I change something of note, and it's purely
+sequential. The first real commit was version 1.
+
+** Competitors
+#+BEGIN_NOTES
+Competition is the surest sign of demand
+#+END_NOTES
+
+As @Sifus pointed out in =#programming= there already exists a tool called
+[[https://github.com/PhrozenByte/rmtrash][~rmtrash~]]. But that's just a Bash script wrapping around [[https://github.com/andreafrancia/trash-cli][~trash-cli~]].
+
+#+ATTR_REVEAL: :frag t
+~trash-cli~ is a big blob of Python code with really weird UX that isn't ~rm~
+compatible at all (hence ~rmtrash~).
+
+*** 😎
+~trash-d~ on the other hand is a single no-dependency binary that does
+everything all on it's own.
+
+** Future of the Project
+The CLI tool is mostly done. It probably still has some bugs to be squashed and
+cleanup to be done, but features-wise it's more or less where I want it.
+
+#+ATTR_REVEAL: :frag t
+So some future goals include getting it packaged for various distros, and
+generally making people aware of its existence.
+
+#+ATTR_REVEAL: :frag t
+You have just experience phase 1 of that plan
+
+** Brief Code Walkthrough
+[[https://github.com/rushsteve1/trash-d/blob/main/trash.d][github.com/rushsteve1/trash-d/blob/main/trash.d]]
+
+* /That's All Folks!/
+Questions? Comments? Complaints?

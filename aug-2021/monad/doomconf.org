@@ -1,0 +1,39 @@
+#+TITLE: Verting Co
+#+AUTHOR: Monad Gauge
+#+OPTIONS: toc:nil reveal_width:1200 reveal_height:1080 num:nil
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+
+* How to start working on a major contribution
+
+#+ATTR_REVEAL: :frag (roll-in)
+- Have a paper to write
+- Do not feel like writing that paper
+- Convince yourself that since it's not your own project, it's productive procrastination
+
+#+REVEAL: split
+[[file:discord.png]]
+
+#+REVEAL: split
+[[file:github.png]]
+* Some Key Takeaways
+
+* Priority one is making it dogfoodable
+
+* Maintain a Todo list/Notes file
+
+#+REVEAL: split
+[[file:todo-before.png]]
+
+#+REVEAL: split
+#+REVEAL_HTML: <iframe width="380" height="1345" src="todo-after.png"></iframe>
+* The 80/20 rule is very, very, real
+
+* Talk with the upstream people, and contribute what you can
+
+* Get Beta testers, somehow
+
+* Merge as soon as possible
+
+* Github kind of sucks for huge pr's
+
+* thanks :D

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>D lang &amp; Trash-D</title>
+<meta name="author" content="rushsteve1"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/beige.css" id="theme"/>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1 class="title">D lang &amp; Trash-D</h1><h2 class="author">rushsteve1</h2><p class="date">Created: 2021-08-15 Sun 09:24</p>
+</section>
+
+<section>
+<section id="slide-org85e1d28">
+<h2 id="org85e1d28">Meta Stuff</h2>
+<p>
+This talk is in two parts: First I&rsquo;ll go over the D programming language and
+some neat parts of it. Then in the second half I&rsquo;ll go over a command line tool
+I wrote in D and what&rsquo;s interesting about that and nice.
+</p>
+
+</section>
+<section>
+
+<p>
+<a href="https://doomconf.netlify.app/rushsteve1/trash-d">doomconf.netlify.app/rushsteve1/trash-d</a>
+</p>
+
+<p>
+<a href="https://doomconf.netlify.app/rushsteve1/trash-d.org">doomconf.netlify.app/rushsteve1/trash-d.org</a>
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org4ede8ea">
+<h2 id="org4ede8ea">The D programming language</h2>
+<p>
+<a href="https://dlang.org">dlang.org</a>
+</p>
+
+<p>
+A <code>C</code> compatible and optionally garbage-collected systems programming language.
+</p>
+
+<p>
+First released in 2001 and continually updated since then.
+</p>
+
+<p>
+Basically C++ but better.
+</p>
+
+</section>
+<section>
+
+
+<div id="orgb72ab3b" class="figure">
+<p><img src="https://dlang.org/images/dlogo_opengraph.png" alt="dlogo_opengraph.png" />
+</p>
+</div>
+
+</section>
+<section id="slide-orgdf1bd4e">
+<h3 id="orgdf1bd4e">Notable Features</h3>
+<aside class="notes">
+<p>
+The D documentation has a whole section called &ldquo;D&rsquo;s Gems&rdquo; that go over some of
+the really nice features of the language.
+</p>
+
+<p>
+But here&rsquo;s a selection of features that I really like&#x2026;
+</p>
+
+</aside>
+
+<ul>
+<li class="fragment">Actual strings</li>
+<li class="fragment">Dynamic arrays and hashmaps</li>
+<li class="fragment">Invariants and contract programming</li>
+<li class="fragment"><a href="https://tour.dlang.org/tour/en/gems/uniform-function-call-syntax-ufcs">Uniform Function Call Syntax</a> (UFCS)</li>
+<li class="fragment">Very easy <code>C</code> and <code>C++</code> interop</li>
+<li class="fragment">Lambdas and higher-order functions</li>
+<li class="fragment">Unit testing built-in</li>
+
+</ul>
+
+<p class="fragment">
+&#x2026; and more!
+</p>
+
+</section>
+<section id="slide-org152e451">
+<h3 id="org152e451">The Standard Library</h3>
+<aside class="notes">
+<p>
+D has a really great standard library named &ldquo;Phobos&rdquo;.
+The whole language has a Mars theme since the company that originally created it
+is named &ldquo;Digital Mars&rdquo;.
+</p>
+
+</aside>
+
+<ul>
+<li class="fragment">Ranges and lazy iterators</li>
+<li class="fragment">SQLite bindings</li>
+<li class="fragment"><i>Lots</i> of utility functions</li>
+<li class="fragment">Green threads / Continuations</li>
+<li class="fragment">CLI options parser</li>
+
+</ul>
+
+<p class="fragment">
+And all the sane normal things that C doesn&rsquo;t have.
+</p>
+
+</section>
+<section id="slide-org00809a1">
+<h3 id="org00809a1">Weird Bits</h3>
+<aside class="notes">
+<p>
+Every language has it&rsquo;s oddities and rough parts, and D is of course no
+different. But they&rsquo;re not that bad when looking at the competition.
+</p>
+
+</aside>
+
+<ul>
+<li class="fragment">Unicode support is odd (<code>char</code> and <code>dchar</code>)</li>
+<li class="fragment">Classes vs Structs</li>
+<li class="fragment">It&rsquo;s a Big language</li>
+<li class="fragment">Multiple compilers</li>
+
+</ul>
+
+<p class="fragment">
+Overall not that many funky parts compared to say C++
+</p>
+
+</section>
+<section id="slide-org10b0b96">
+<h3 id="org10b0b96">The Ecosystem</h3>
+<p class="fragment">
+About as dead as it can get without being totally dead.
+</p>
+
+<p class="fragment">
+It&rsquo;s a real shame, but the language never really took off. However in recent
+years with renewed interest in systems programming there has been some movement.
+</p>
+
+</section>
+<section id="slide-orgca843ad">
+<h3 id="orgca843ad">Why <span class="underline">You</span> Should Care</h3>
+<ul>
+<li class="fragment">If you&rsquo;re looking for something&#x2026;
+<ul>
+<li class="fragment">nicer than C/C++</li>
+<li class="fragment">less daunting than Rust</li>
+<li class="fragment">less spartan than Go</li>
+
+</ul></li>
+<li class="fragment">If you think systems programming is neat.</li>
+<li class="fragment">If you just want to learn a cool language and use some rare language features.</li>
+
+</ul>
+
+<p class="fragment">
+&#x2026; then give D a try!
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org5e09bd1">
+<h2 id="org5e09bd1">What is <code>trash-d</code></h2>
+<p>
+<code>trash-d</code> is a standalone CLI tool that&rsquo;s <i>almost</i> completely compatible with
+<code>rm</code> but instead of permanently deleting a file it moves it to the trash bin.
+</p>
+
+<p>
+<a href="https://github.com/rushsteve1/trash-d">rushsteve1/trash-d</a>
+</p>
+
+</section>
+<section id="slide-org77c4f67">
+<h3 id="org77c4f67">Why Did I Make This?</h3>
+<p>
+This is something I&rsquo;ve wanted for a long time but never got around to making or
+finding.
+</p>
+
+<p class="fragment">
+One day last week or so @tecosaur was talking about how he accidentally <code>rm
+-rf</code>&rsquo;d his music folder, and I made a comment saying that making a version that
+uses the trash bin should be pretty easy.
+</p>
+
+<p class="fragment">
+It was not.
+</p>
+
+</section>
+<section id="slide-org360781c">
+<h3 id="org360781c">Why be Compatible With <code>rm</code>?</h3>
+<p>
+The entire point of this project was to create a tool that you could <code>alias
+rm=trash</code> and not even notice the difference, while still gaining all of the
+benefits of using the trash bin.
+</p>
+
+</section>
+<section>
+<p>
+This was ultimately quite tricky. <code>rm</code> doesn&rsquo;t have many flags, but their
+interaction and exact results required a lot of figuring out.
+</p>
+
+<p class="fragment">
+On top of that I  even made the error messages compatible. On the off chance
+someone&rsquo;s parsing those&#x2026;
+</p>
+
+</section>
+<section id="slide-org750fe6e">
+<h3 id="org750fe6e">Why are Versions Missing?</h3>
+<aside class="notes">
+<p>
+Some of the sharp-eyed among you have already taken a look at the GitHub
+releases page and noticed there are some gaps
+</p>
+
+</aside>
+
+<p class="fragment">
+If you check the git history the missing numbers actually exist in code. But
+they were superseded so fast I never got around to making a release page.
+</p>
+
+<p class="fragment">
+Also I bump the number every time I change something of note, and it&rsquo;s purely
+sequential. The first real commit was version 1.
+</p>
+
+</section>
+<section id="slide-org3281d5e">
+<h3 id="org3281d5e">Competitors</h3>
+<aside class="notes">
+<p>
+Competition is the surest sign of demand
+</p>
+
+</aside>
+
+<p>
+As @Sifus pointed out in <code>#programming</code> there already exists a tool called
+<a href="https://github.com/PhrozenByte/rmtrash"><code>rmtrash</code></a>. But that&rsquo;s just a Bash script wrapping around <a href="https://github.com/andreafrancia/trash-cli"><code>trash-cli</code></a>.
+</p>
+
+<p class="fragment">
+<code>trash-cli</code> is a big blob of Python code with really weird UX that isn&rsquo;t <code>rm</code>
+compatible at all (hence <code>rmtrash</code>).
+</p>
+
+</section>
+<section id="slide-org6526251">
+<h4 id="org6526251">😎</h4>
+<p>
+<code>trash-d</code> on the other hand is a single no-dependency binary that does
+everything all on it&rsquo;s own.
+</p>
+
+</section>
+<section id="slide-orgfd5dff4">
+<h3 id="orgfd5dff4">Future of the Project</h3>
+<p>
+The CLI tool is mostly done. It probably still has some bugs to be squashed and
+cleanup to be done, but features-wise it&rsquo;s more or less where I want it.
+</p>
+
+<p class="fragment">
+So some future goals include getting it packaged for various distros, and
+generally making people aware of its existence.
+</p>
+
+<p class="fragment">
+You have just experience phase 1 of that plan
+</p>
+
+</section>
+<section id="slide-org2a745c1">
+<h3 id="org2a745c1">Brief Code Walkthrough</h3>
+<p>
+<a href="https://github.com/rushsteve1/trash-d/blob/main/trash.d">github.com/rushsteve1/trash-d/blob/main/trash.d</a>
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgdc5d19b">
+<h2 id="orgdc5d19b"><i>That&rsquo;s All Folks!</i></h2>
+<p>
+Questions? Comments? Complaints?
+</p>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/search/search.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom/zoom.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+overview: true,
+
+transition: 'convex',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>
