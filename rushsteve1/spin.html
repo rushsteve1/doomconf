@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Spinnerette</title>
+<meta name="author" content="rushsteve1"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/beige.css" id="theme"/>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1 class="title">Spinnerette</h1><h2 class="author">rushsteve1</h2><p class="date">Created: 2021-11-12 Fri 22:34</p>
+</section>
+
+<section>
+<section id="slide-org8acd212">
+<h2 id="org8acd212">Something about spiders?</h2>
+<p>
+Spinnerette is a platform for quickly developing web sites using Janet.
+</p>
+
+<p>
+Think of it like PHP but replace the horrors of PHP with a modern LISP.
+</p>
+
+</section>
+<section id="slide-org0115eb3">
+<h3 id="org0115eb3">Janet</h3>
+<p>
+A newer LISP language with a lot of nice features.
+</p>
+
+<p>
+TL;DR Janet looks like Clojure, embeds like Lua.
+</p>
+
+</section>
+<section id="slide-org06a03fa">
+<h3 id="org06a03fa">But the GitHub says it&rsquo;s in Go</h3>
+<p>
+The core Spinnerette runtime is written in Go with bindings to Janet (which is
+in C).
+</p>
+
+<p>
+I picked Go because it comes with an HTTP and FastCGI server OOTB, and has great
+multitasking. And is capable of compiling down to a single static executable.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org0e545a1">
+<h2 id="org0e545a1">Cool examples</h2>
+<p>
+Some quick examples of features of Spinnerette and the various different ways
+you can use it to create web pages.
+</p>
+
+</section>
+<section id="slide-org57efa8b">
+<h3 id="org57efa8b">HTML in Janet</h3>
+<p>
+You can build up HTML using Janet data structures. If you&rsquo;re familliar with
+Hiccup the syntax is very similar.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-janet">
+(<span style="color: #e45649;">import</span> janet-html <span style="color: #a626a4;">:as</span> html)
+
+(html/encode
+ [<span style="color: #a626a4;">:html</span>
+  [<span style="color: #a626a4;">:body</span>
+   [<span style="color: #a626a4;">:h1</span> <span style="color: #50a14f;">"Hello from Janet-HTML"</span>]
+   [<span style="color: #a626a4;">:p</span> <span style="color: #50a14f;">"this was created with pure Janet!"</span>]]])
+</pre>
+</div>
+
+</section>
+<section id="slide-org2cc5714">
+<h3 id="org2cc5714">Janet in HTML</h3>
+<p>
+You can write Janet in HTML using Temple. Very PHPy.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-html">{$
+  (import janet-html :as html)
+  (import spin/markdown :as md)
+$}
+
+&lt;<span style="color: #a626a4;">html</span>&gt;
+    &lt;<span style="color: #a626a4;">body</span>&gt;
+      &lt;<span style="color: #a626a4;">h1</span>&gt;<span style="font-weight: bold; text-decoration: underline;">{{ "Hello there!" }}</span>&lt;/<span style="color: #a626a4;">h1</span>&gt;
+
+      {- (html/encode [:div [:p "Fun with templates"]]) -}
+
+      {-
+        (md/temple "**Hello from Markdown,
+          {{ (args :x) }}**" :x "yes")
+      -}
+    &lt;/<span style="color: #a626a4;">body</span>&gt;
+&lt;/<span style="color: #a626a4;">html</span>&gt;
+</pre>
+</div>
+
+</section>
+<section id="slide-org3ed5197">
+<h3 id="org3ed5197">Built-in SQLite</h3>
+<p>
+Having database support is a killer feature of PHP.
+We just picked a better database.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-janet">(<span style="color: #e45649;">import</span> sqlite3 <span style="color: #a626a4;">:as</span> sql)
+
+<span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">Open an SQLite3 database at the file "test.db"</span>
+(<span style="color: #e45649;">def</span> <span style="color: #6a1868;">dbfile</span> <span style="color: #50a14f;">"./test.db"</span>)
+(<span style="color: #e45649;">def</span> <span style="color: #6a1868;">db</span> (sql/open dbfile))
+
+<span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">Insert some data into the database and query it back out</span>
+(sql/eval db
+  <span style="color: #50a14f;">`CREATE TABLE IF NOT EXISTS</span>
+<span style="color: #50a14f;">   customers(id INTEGER PRIMARY KEY, name TEXT);`</span>)
+(sql/eval db
+  <span style="color: #50a14f;">`INSERT INTO customers VALUES(:id, :name);`</span>
+  {<span style="color: #a626a4;">:name</span> <span style="color: #50a14f;">"John"</span> <span style="color: #a626a4;">:id</span> <span style="color: #da8548; font-weight: bold;">12345</span>})
+(<span style="color: #e45649;">def</span> <span style="color: #6a1868;">res</span> (sql/eval db <span style="color: #50a14f;">`SELECT * FROM customers;`</span>))
+</pre>
+</div>
+
+</section>
+<section id="slide-org0d66379">
+<h3 id="org0d66379">Janet in Markdown</h3>
+<div class="org-src-container">
+
+<pre class="src src-markdown"><span style="color: #e45649; font-weight: bold;"># </span><span style="color: #e45649; font-weight: bold;">Hello from Markdown</span>
+
+Spinnerette also supports <span style="color: #383a42;">**</span><span style="color: #da8548; font-weight: bold;">Markdown</span><span style="color: #383a42;">**</span> rendering!
+
+<span style="background-color: #e7e7e7;">| Item         | Price     | # In stock |</span>
+<span style="background-color: #e7e7e7;">|--------------|-----------|------------|</span>
+<span style="background-color: #e7e7e7;">| Juicy Apples | 1.99      | </span><span style="color: #383a42; background-color: #e7e7e7;">*</span><span style="color: #b751b6; background-color: #e7e7e7; font-style: italic;">7</span><span style="color: #383a42; background-color: #e7e7e7;">*</span><span style="background-color: #e7e7e7;">        |</span>
+<span style="background-color: #e7e7e7;">| Bananas      | </span><span style="color: #383a42; background-color: #e7e7e7;">**</span><span style="color: #da8548; background-color: #e7e7e7; font-weight: bold;">1.89</span><span style="color: #383a42; background-color: #e7e7e7;">**</span><span style="background-color: #e7e7e7;">  | 5234       |</span>
+
+{{ (string "Markdown files also support Temple templates!") }}
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org4390d7f">
+<h2 id="org4390d7f">OK but what&rsquo;s the Point?</h2>
+<p>
+PHP is great for being able to very quickly and easily create websites. But PHP
+itself kinda sucks.
+</p>
+
+<p>
+So Spinnerette is trying to create the same rapid and fun development cycle, but
+without the pains of PHP.
+</p>
+
+</section>
+<section id="slide-org9a4c693">
+<h3 id="org9a4c693">Minimalism and Webservers</h3>
+<p>
+One of the biggest ways we make things simple is that Spinnerette is
+bring-your-own-webserver. You just plug it in with HTTP or FastCGI and use your
+old-school <code>.htaccess</code> and <code>mod_rewrite</code>.
+</p>
+
+<p>
+Everything else is just files waiting to be served.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc8acf8b">
+<h2 id="orgc8acf8b">Future Stuff</h2>
+<ul>
+<li>CSS from Janet like Garden</li>
+<li>Config file</li>
+<li>More features</li>
+<li>Testing</li>
+<li>Other things?!?</li>
+
+</ul>
+
+</section>
+<section id="slide-orgc0ec456">
+<h3 id="orgc0ec456">Begging Time</h3>
+<p>
+I kinda need some help here. The one-man-band thing is fun, but I run out of
+steam.
+</p>
+
+<p>
+So if any of this sounded interesting to you, come check out the repo:
+</p>
+
+<p>
+<a href="https://github.com/rushsteve1/spinnerette">https://github.com/rushsteve1/spinnerette</a>
+</p>
+
+</section>
+<section id="slide-org6e55e14">
+<h3 id="org6e55e14">Come on down to Spinnerette</h3>
+<p>
+We have&#x2026;
+</p>
+
+<ul>
+<li>A sick logo</li>
+<li>Cursed C preprocessor usage</li>
+<li><del>Spiders</del></li>
+<li>Thread-safety (I hope)</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org32a966c">
+<h2 id="org32a966c">Questions? Comments? Complaints?</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/search/search.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom/zoom.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+overview: true,
+
+transition: 'convex',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>

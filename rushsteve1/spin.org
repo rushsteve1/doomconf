@@ -1,0 +1,152 @@
+#+TITLE: Spinnerette
+#+AUTHOR: rushsteve1
+#+EMAIL: rushsteve1@rushsteve1.us
+#+OPTIONS: toc:nil num:nil
+#+REVEAL_THEME: beige
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+
+* Something about spiders?
+
+Spinnerette is a platform for quickly developing web sites using Janet.
+
+Think of it like PHP but replace the horrors of PHP with a modern LISP.
+
+** Janet
+
+A newer LISP language with a lot of nice features.
+
+TL;DR Janet looks like Clojure, embeds like Lua.
+
+** But the GitHub says it's in Go
+
+The core Spinnerette runtime is written in Go with bindings to Janet (which is
+in C).
+
+I picked Go because it comes with an HTTP and FastCGI server OOTB, and has great
+multitasking. And is capable of compiling down to a single static executable.
+
+* Cool examples
+
+Some quick examples of features of Spinnerette and the various different ways
+you can use it to create web pages.
+
+** HTML in Janet
+
+You can build up HTML using Janet data structures. If you're familliar with
+Hiccup the syntax is very similar.
+
+#+begin_src janet
+
+(import janet-html :as html)
+
+(html/encode
+ [:html
+  [:body
+   [:h1 "Hello from Janet-HTML"]
+   [:p "this was created with pure Janet!"]]])
+#+end_src
+
+** Janet in HTML
+
+You can write Janet in HTML using Temple. Very PHPy.
+
+#+begin_src html
+{$
+  (import janet-html :as html)
+  (import spin/markdown :as md)
+$}
+
+<html>
+    <body>
+      <h1>{{ "Hello there!" }}</h1>
+
+      {- (html/encode [:div [:p "Fun with templates"]]) -}
+
+      {-
+        (md/temple "**Hello from Markdown,
+          {{ (args :x) }}**" :x "yes")
+      -}
+    </body>
+</html>
+#+end_src
+
+** Built-in SQLite
+
+Having database support is a killer feature of PHP.
+We just picked a better database.
+
+#+begin_src janet
+(import sqlite3 :as sql)
+
+# Open an SQLite3 database at the file "test.db"
+(def dbfile "./test.db")
+(def db (sql/open dbfile))
+
+# Insert some data into the database and query it back out
+(sql/eval db
+  `CREATE TABLE IF NOT EXISTS
+   customers(id INTEGER PRIMARY KEY, name TEXT);`)
+(sql/eval db
+  `INSERT INTO customers VALUES(:id, :name);`
+  {:name "John" :id 12345})
+(def res (sql/eval db `SELECT * FROM customers;`))
+#+end_src
+
+** Janet in Markdown
+
+#+begin_src markdown
+# Hello from Markdown
+
+Spinnerette also supports **Markdown** rendering!
+
+| Item         | Price     | # In stock |
+|--------------|-----------|------------|
+| Juicy Apples | 1.99      | *7*        |
+| Bananas      | **1.89**  | 5234       |
+
+{{ (string "Markdown files also support Temple templates!") }}
+#+end_src
+
+* OK but what's the Point?
+
+PHP is great for being able to very quickly and easily create websites. But PHP
+itself kinda sucks.
+
+So Spinnerette is trying to create the same rapid and fun development cycle, but
+without the pains of PHP.
+
+** Minimalism and Webservers
+
+One of the biggest ways we make things simple is that Spinnerette is
+bring-your-own-webserver. You just plug it in with HTTP or FastCGI and use your
+old-school =.htaccess= and =mod_rewrite=.
+
+Everything else is just files waiting to be served.
+
+* Future Stuff
+
+- CSS from Janet like Garden
+- Config file
+- More features
+- Testing
+- Other things?!?
+
+** Begging Time
+
+I kinda need some help here. The one-man-band thing is fun, but I run out of
+steam.
+
+So if any of this sounded interesting to you, come check out the repo:
+
+https://github.com/rushsteve1/spinnerette
+
+** Come on down to Spinnerette
+
+We have...
+
+- A sick logo
+- Cursed C preprocessor usage
+- +Spiders+
+- Thread-safety (I hope)
+
+* Questions? Comments? Complaints?
