@@ -1,0 +1,6 @@
+#+TITLE: The website for Doom Conf!
+
+this is source for the [[https://doomconf.netlify.app][doom conf website]]
+
+*if you are a speaker please send your slide deck to one of the maintainers or
+make a PR*

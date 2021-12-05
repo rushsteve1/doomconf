@@ -1,0 +1,32 @@
+    body {
+        font-family: "Source Code Pro";
+        max-width: 50rem;
+        margin: auto;
+        display: flex;
+        flex-flow: column nowrap;
+        height: 100vh;
+        background-color: #282c34;
+        color: #bbc2cf;
+        font-size: 13pt;
+    }
+    a {
+        color: #51afef;
+        font-weight: bold;
+    }
+    code {
+        font-family: inherit;
+        font-size: inherit;
+        color: #da8548;
+    }
+    kbd {
+        outline: 0.1rem dashed #bbc2cf;
+        padding: 0.2rem;
+    }
+    main {
+        flex-grow: 1;
+        padding: 1rem;
+    }
+    footer {
+        text-align: center;
+        padding: 1rem;
+    }
