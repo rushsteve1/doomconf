@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Relativity for Nonphysicists</title>
+<meta name="author" content="Monad Gauge"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/black.css" id="theme"/>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1 class="title">Relativity for Nonphysicists</h1><h2 class="author">Monad Gauge</h2><p class="date">Created: 2021-12-21 Tue 00:35</p>
+</section>
+
+
+<section>
+<section id="slide-orgd5df3ff">
+<h2 id="orgd5df3ff">The Goals</h2>
+<ul>
+<li>Symmetry</li>
+<li>Universal speed limit</li>
+<li>No such thing as a universal time</li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org07f801e">
+<h2 id="org07f801e">What you need to know</h2>
+<div class="outline-text-2" id="text-org07f801e">
+</div>
+</section>
+<section id="slide-org7462555">
+<h3 id="org7462555">Math</h3>
+<ul>
+<li>Basic arithmetic</li>
+<li>Derivatives</li>
+<li>What a group is</li>
+<li>Basic linear algebra</li>
+
+</ul>
+</section>
+<section id="slide-orgd224274">
+<h3 id="orgd224274">Coordinate System</h3>
+<div>
+\begin{equation}
+t,x,y,z
+\end{equation}
+
+</div>
+</section>
+<section>
+<div>
+\begin{equation}
+x(t),y(t),z(t)
+\end{equation}
+
+</div>
+</section>
+<section>
+<p>
+\(x, y \text{ and } z\) are not special<sup>*</sup>
+</p>
+</section>
+<section>
+<div>
+\begin{equation}
+r(t),\theta(t),\phi(t)
+\end{equation}
+
+</div>
+</section>
+<section id="slide-orgc791f84">
+<h3 id="orgc791f84">Inertial Reference Frames</h3>
+</section>
+<section id="slide-org32f0747">
+<h3 id="org32f0747">Notation</h3>
+</section>
+<section id="slide-org1fcbf4e">
+<h3 id="org1fcbf4e">Notation</h3>
+<div>
+\begin{align}
+x^\mu = \begin{pmatrix}ct\\x\\y\\z\end{pmatrix}
+\end{align}
+
+</div>
+</section>
+<section>
+<div>
+\begin{align}
+x^\mu = \begin{pmatrix}ct\\x\end{pmatrix}
+\end{align}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orge521052">
+<h2 id="orge521052">Symmetry</h2>
+<div class="outline-text-2" id="text-orge521052">
+</div>
+</section>
+<section id="slide-orga28af17">
+<h3 id="orga28af17">Symmetries determine the allowed physical theories</h3>
+</section>
+<section id="slide-org19cf319">
+<h3 id="org19cf319">Newtonian mechanics is a framework</h3>
+</section>
+<section id="slide-org3d5be8b">
+<h3 id="org3d5be8b">What are the symmetries that Newtonian mechanics preserve?</h3>
+</section>
+<section id="slide-orgdcac179">
+<h3 id="orgdcac179">Newton&rsquo;s Laws</h3>
+</section>
+<section id="slide-orgbc249a3">
+<h3 id="orgbc249a3">N1: With no outside forces, objects move at a constant velocity.</h3>
+<div>
+\begin{equation}
+x(t) = a\cdot t + b
+\end{equation}
+
+</div>
+</section>
+<section>
+<div>
+\begin{equation}
+\vec{x}(t) = \vec{a}\cdot t + \vec{b}
+\end{equation}
+
+</div>
+</section>
+<section id="slide-orgc159b71">
+<h3 id="orgc159b71">What symmetries preserve straight lines?</h3>
+<ul>
+<li class="fragment roll-in">Translations in time \(t' = t + t_0\)</li>
+<li class="fragment roll-in">Translations in space \(\vec{x}' = \vec{x} + \vec{x}_0\)</li>
+<li class="fragment roll-in">Rotations \(\vec{x}' = O\vec{x}\)</li>
+<li class="fragment roll-in">Moving at a constant speed \(\vec{x}' = \vec{x} + \vec{v}t\)</li>
+
+</ul>
+</section>
+<section id="slide-org261fbd5">
+<h3 id="org261fbd5">We call these Galilean Transformations</h3>
+</section>
+<section id="slide-org3e40315">
+<h3 id="org3e40315">What happens when you use some other transformation?</h3>
+</section>
+<section id="slide-org765505d">
+<h3 id="org765505d">You&rsquo;ve been in a car before</h3>
+</section>
+<section id="slide-org97a40b1">
+<h3 id="org97a40b1">N2:</h3>
+<div>
+\begin{equation}
+\vec{F} = m\vec{a}
+\end{equation}
+
+</div>
+</section>
+<section id="slide-org5635099">
+<h3 id="org5635099">N3: Each action has an equal and opposite reaction</h3>
+<ul>
+<li>Implies conservation of momentum</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org737d0dd">
+<h2 id="org737d0dd">The speed of light is the same in all inertial reference frames</h2>
+<div class="outline-text-2" id="text-org737d0dd">
+</div>
+</section>
+<section id="slide-org3a73978">
+<h3 id="org3a73978">The speed of light appears in Maxwell&rsquo;s equations</h3>
+</section>
+<section id="slide-orgd0109de">
+<h3 id="orgd0109de">Experimentally, light does not seem to travel in a medium</h3>
+</section>
+<section id="slide-org776ad1f">
+<h3 id="org776ad1f">The solution was to assume that the speed of light is constant</h3>
+</section>
+<section id="slide-org3bf24ab">
+<h3 id="org3bf24ab">Note, light isn&rsquo;t special here, it just happens to travel at this speed</h3>
+</section>
+<section id="slide-org7eb9005">
+<h3 id="org7eb9005">What Galilean Transformations respect this?</h3>
+<ul>
+<li class="fragment roll-in">✓ Translations in time \(t' = t + t_0\)</li>
+<li class="fragment roll-in">✓ Translations in space \(\vec{x}' = \vec{x} + \vec{x}_0\)</li>
+<li class="fragment roll-in">✓ Rotations \(\vec{x}' = O\vec{x}\)</li>
+<li class="fragment roll-in">❌ Moving at a constant speed \(\vec{x}' = \vec{x} + \vec{v}t\)</li>
+
+</ul>
+</section>
+<section id="slide-org35cd210">
+<h3 id="org35cd210">We need to replace constant speed transformations with something else</h3>
+</section>
+<section id="slide-org2db6edc">
+<h3 id="org2db6edc">Lorentz Transformation</h3>
+<div>
+\begin{align}
+t' = \gamma\left(t - \frac{vx}{c^2}\right)\\
+x' = \gamma\left(x-vt\right)\\
+\quad\\
+\gamma = \frac{1}{\sqrt{1-\frac{v^2}{c^2}}}
+\end{align}
+
+</div>
+</section>
+<section>
+<div>
+\begin{equation}
+\end{equation}
+
+</div>
+<div>
+\begin{align}
+ct' = \gamma\left(ct - \beta x\right)\\
+x' = \gamma\left(x-\beta ct\right)\\
+\quad\\
+\end{align}
+
+</div>
+<div>
+\begin{align}
+\beta &= \frac{v}{c} &\gamma &= \frac{1}{\sqrt{1-\beta^2}}
+\end{align}
+
+</div>
+</section>
+<section>
+<div>
+\begin{equation}
+\begin{pmatrix}ct'\\x'\end{pmatrix} = \begin{pmatrix}\gamma\left(t - \beta x\right)\\\gamma\left(x - \beta ct\right)\end{pmatrix}
+\end{equation}
+
+</div>
+</section>
+<section>
+<div>
+\begin{align}
+\begin{pmatrix}ct'\\x'\end{pmatrix} &= \begin{pmatrix}\gamma & -\gamma\beta\\-\gamma\beta & \gamma\end{pmatrix} \begin{pmatrix}ct\\x\end{pmatrix}
+\end{align}
+
+</div>
+</section>
+<section>
+<div>
+\begin{equation}
+-1 \lt \beta \lt 1\\
+\downarrow\\
+\beta = \tanh w
+\end{equation}
+
+</div>
+</section>
+<section>
+<div>
+\begin{align}
+\begin{pmatrix}ct'\\x'\end{pmatrix} &= \begin{pmatrix}\cosh w & - \sinh w\\-sinh w & \cosh w\end{pmatrix} \begin{pmatrix}ct\\x\end{pmatrix}
+\end{align}
+
+</div>
+</section>
+<section>
+<div>
+\begin{align}
+\begin{pmatrix}x'\\y'\end{pmatrix} &= \begin{pmatrix}\cos \theta & - \sin \theta\\sin \theta & \cos \theta\end{pmatrix} \begin{pmatrix}y\\y\end{pmatrix}
+\end{align}
+
+</div>
+</section>
+<section id="slide-org86ff793">
+<h3 id="org86ff793">Rotation perserves the distance between two points in space</h3>
+<div>
+\begin{equation}
+\Delta r^2 = \Delta x^2 + \Delta y^2 + \Delta z^2
+\end{equation}
+
+</div>
+</section>
+<section id="slide-org992eb09">
+<h3 id="org992eb09">A Lorentz transformation perserves the interval between two points in spacetime</h3>
+<div>
+\begin{equation}
+\Delta s^2 = c^2\Delta t^2 -\left(\Delta x^2 + \Delta y^2 + \Delta z^2\right)
+\end{equation}
+
+</div>
+</section>
+<section id="slide-org70abf14">
+<h3 id="org70abf14">There are three types of separated spacetime points:</h3>
+<div>
+\begin{equation}
+\Delta s^2 = c^2\Delta t^2 -\Delta x^2
+\end{equation}
+
+</div>
+<ul>
+<li class="fragment roll-in">timelike: \(\Delta s^2 > 0\)</li>
+<li class="fragment roll-in">lightlike: \(\Delta s^2 = 0\)</li>
+<li class="fragment roll-in">spacelike: \(\Delta s^2 < 0\)</li>
+
+</ul>
+</section>
+<section id="slide-orgfc7cddf">
+<h3 id="orgfc7cddf">Spacelike points are causally separated</h3>
+<ul>
+<li>In order to reach one from the other, you&rsquo;d have to travel faster than the speed of light.</li>
+
+</ul>
+</section>
+<section id="slide-org21c8c14">
+<h3 id="org21c8c14">The light cone</h3>
+
+<div id="org58b12e0" class="figure">
+<p><img src="light_cone.png" alt="light_cone.png" />
+</p>
+</div>
+</section>
+<section id="slide-org7f90805">
+<h3 id="org7f90805">Why a speed limit?</h3>
+<ul>
+<li class="fragment roll-in">Lorentz transformations are how we got to moving reference frames</li>
+<li class="fragment roll-in">We assume that physical objects have a rest frame</li>
+<li class="fragment roll-in">From there, we only have continuous transformations up to the speed of light (where \(\gamma = \infty\))</li>
+<li class="fragment roll-in">We can approach it from the other side (\(0 \le \frac{1}{\beta} < 1\)), that&rsquo;s what a tachyon is.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org2ac3166">
+<h2 id="org2ac3166">No such thing as a universal time</h2>
+<div class="outline-text-2" id="text-org2ac3166">
+</div>
+</section>
+<section id="slide-org540c2a1">
+<h3 id="org540c2a1">two events happening in the same place</h3>
+<div>
+\begin{align}
+\begin{pmatrix}ct_1\\x_1\end{pmatrix} &= \begin{pmatrix}0\\0\end{pmatrix} \\
+\\
+\begin{pmatrix}ct_2\\x_2\end{pmatrix} &= \begin{pmatrix}\alpha\\0\end{pmatrix}
+\end{align}
+
+</div>
+</section>
+<section id="slide-org84c6e65">
+<h3 id="org84c6e65">What happens after a lorentz transformation?</h3>
+<div>
+\begin{align}
+\begin{pmatrix}ct_1'\\x_1'\end{pmatrix} &= \begin{pmatrix}\gamma & -\gamma\beta\\-\gamma\beta & \gamma\end{pmatrix} \begin{pmatrix}0\\0\end{pmatrix} = \begin{pmatrix}0\\0\end{pmatrix}\\
+\\
+\begin{pmatrix}ct_2'\\x_2'\end{pmatrix} &= \begin{pmatrix}\gamma & -\gamma\beta\\-\gamma\beta & \gamma\end{pmatrix} \begin{pmatrix}\alpha\\0\end{pmatrix} = \begin{pmatrix}\gamma\alpha\\\gamma\beta\alpha\end{pmatrix}\\
+\end{align}
+
+</div>
+</section>
+<section id="slide-orgf597c42">
+<h3 id="orgf597c42">In the moving reference frame, time passes slower!</h3>
+<p>
+\[ct_2' = \gamma \alpha > \alpha = ct_2 \]
+**two events happening at the same time
+</p>
+<div>
+\begin{align}
+\begin{pmatrix}ct_1\\x_1\end{pmatrix} &= \begin{pmatrix}0\\\alpha\end{pmatrix} \\
+\\
+\begin{pmatrix}ct_2\\x_2\end{pmatrix} &= \begin{pmatrix}0\\-\alpha\end{pmatrix}
+\end{align}
+
+</div>
+</section>
+<section id="slide-orged8733f">
+<h3 id="orged8733f">What happens after a lorentz transformation?</h3>
+<div>
+\begin{align}
+\begin{pmatrix}ct_1'\\x_1'\end{pmatrix} &= \begin{pmatrix}\gamma & -\gamma\beta\\-\gamma\beta & \gamma\end{pmatrix} \begin{pmatrix}0\\\alpha\end{pmatrix} = \begin{pmatrix}-\gamma\beta\alpha\\\gamma\alpha\end{pmatrix}\\
+\\
+\begin{pmatrix}ct_2'\\x_2'\end{pmatrix} &= \begin{pmatrix}\gamma & -\gamma\beta\\-\gamma\beta & \gamma\end{pmatrix} \begin{pmatrix}0\\-\alpha\end{pmatrix} = \begin{pmatrix}\gamma\beta\alpha\\-\gamma\alpha\end{pmatrix}\\
+\end{align}
+
+</div>
+</section>
+<section id="slide-org30773ee">
+<h3 id="org30773ee">A Lorentz Transformation</h3>
+<div>
+\begin{align}
+\begin{pmatrix}ct_1'\\x_1'\end{pmatrix} &=  \begin{pmatrix}-\gamma\beta\alpha\\\gamma\alpha\end{pmatrix}\\
+\\
+\begin{pmatrix}ct_2'\\x_2'\end{pmatrix} &=  \begin{pmatrix}\gamma\beta\alpha\\-\gamma\alpha\end{pmatrix}\\
+\end{align}
+
+</div>
+</section>
+<section id="slide-org9bbb895">
+<h3 id="org9bbb895">What happens if we reverse velocity?</h3>
+<div>
+\begin{align}
+\begin{pmatrix}ct_1'\\x_1'\end{pmatrix} &=  \begin{pmatrix}\gamma\beta\alpha\\-\gamma\alpha\end{pmatrix}\\
+\\
+\begin{pmatrix}ct_2'\\x_2'\end{pmatrix} &=  \begin{pmatrix}-\gamma\beta\alpha\\\gamma\alpha\end{pmatrix}\\
+\end{align}
+
+</div>
+</section>
+<section id="slide-orgab6e2be">
+<h3 id="orgab6e2be">These two events have no canonical order</h3>
+<ul>
+<li>depending on the reference frame, their order can change!</li>
+<li>They are truly causally separated!</li>
+
+</ul>
+</section>
+<section id="slide-org262994d">
+<h3 id="org262994d">These two events have no canonical order</h3>
+
+<div id="org7711c03" class="figure">
+<p><img src="Relativity_of_Simultaneity_Animation.gif" alt="Relativity_of_Simultaneity_Animation.gif" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org7d6a5c2">
+<h2 id="org7d6a5c2">The Goals</h2>
+<ul>
+<li>Symmetry</li>
+<li>Universal speed limit</li>
+<li>No such thing as a universal time</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org8de3421">
+<h2 id="org8de3421">Thanks for listening!</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/search/search.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom/zoom.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+overview: true,
+width: 1200,
+height: 1080,
+
+transition: 'none',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>
