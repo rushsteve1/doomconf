@@ -1,0 +1,370 @@
+#+TITLE: DadLang (I Mean Fortran)
+#+AUTHOR: Colin Woodbury
+#+DATE: 2021-12-18
+#+startup: inlineimages
+#+OPTIONS: toc:nil reveal_width:1200 reveal_height:1080 num:nil
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+#+REVEAL_TRANS: slide
+
+* Fortran
+
+In celebration of the brand new =fortran= module...
+
+#+begin_quote
+In FORTRAN, GOD is REAL (unless declared INTEGER).
+#+end_quote
+
+#+ATTR_ORG: :width 500
+[[file:subroutine.jpg]]
+
+* Overview
+
++ History of Fortran
++ The Language Itself
++ Software Development in Modern Fortran
+
+** Sample
+
+#+begin_src f90
+program main
+   ! Declaring which lib files and procedures to import.
+   use hello_fpm, only: say_hello
+   ! Suppress naughty legacy rules.
+   implicit none
+
+   ! Call a subroutine! Just like the movies!
+   call say_hello()
+end program main
+#+end_src
+
+#+begin_src f90
+! Module definition.
+module hello_fpm
+   implicit none
+   ! Make everything module-private by default.
+   private
+   ! Explicit exports.
+   public :: say_hello
+contains
+   subroutine say_hello
+      ! Some IO
+      print *, "Hello, Doom Emacs!"
+   end subroutine say_hello
+end module hello_fpm
+#+end_src
+* History
+
+** Fortran is Old
+
+#+begin_quote
+I graduated in '73... About that time I took /Fortran Programming/ before I took a
+summer job, as a standalone Engineering course. The class was full.
+
+There was a big card reader and there were massive rooms of key-punch machines.
+So you had to grab one and then take your boxes down there, and you had all your
+code on big pieces of paper and you'd have to punch it out. You'd make mistakes.
+That would've been Fortran 66.
+#+end_quote
+
+Fortran is old (older than Lisp!) but has evolved through the decades and mostly
+kept up.
+
+*** Fortran 66 Sample
+
+The indenting is on purpose.
+
+#+begin_src fortran
+      SUBROUTINE MATADD(A,V,ND,MD,N)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      DIMENSION A(ND,N), V(MD,N)
+      DO 10 J=1,N
+      DO 20 I=1,N
+      A(I,J)=A(I,J)+V(I,J)
+  20  CONTINUE
+  10  CONTINUE
+      RETURN
+      END
+#+end_src
+
+** Fortran was First for Real Research
+
+#+begin_quote
+All of my days at BC Hydro were in Fortran 66. And I did thousands and thousands
+of lines of Fortran code. It got to the point that that was all I was doing. I
+was doing a lot of analysis and there were no pen-and-paper options, you just
+had to code it.
+#+end_quote
+
+#+begin_quote
+Fortran was extremely common amongst my colleagues and the people in
+Engineering. There was absolutely no need to look at anything else.
+#+end_quote
+
+** Tedious Programming
+
+Daily programming tasks are a lot nicer today. Back in the old days...
+
+*** Array Processors
+
+#+begin_quote
+There were big breakthroughs in the 60s with Array Processors. So before you had
+those [matrix primitives] embedded in the language you'd have to call up an
+Array Processor, a separate machine, and it was a nightmare trying to debug all
+these things. The calling stuff had to be absolutely perfect... and even then it
+didn't work! Haha.
+#+end_quote
+
+*** RAM
+
+#+begin_quote
+At one time RAM memory was at a premium. We'd be working with Arrays of
+dimension 100,000 or so, and you had to avoid swapping to disk. Sometimes we'd
+write Arrays out to a secondary device and then read them back in later on. It
+could have been tape at the time, although later on it wasn't.
+#+end_quote
+
+** Decades of Legacy Code
+
+#+begin_quote
+But programming [during my career] was just one part of the job, we had lots of
+things to do. If someone could say that I could program in Fox Basic
+Zipzeedoodle and it could save me 100x running time, then I'd do it! But nobody
+could ever really say that to me. Nobody could say "switch to C++ and save all
+this time", it just doesn't happen.
+#+end_quote
+
+There are untold millions of lines of Fortran out there running in various
+research institutes and government agencies. Too much to rewrite. So instead of
+coming up with nice designs and logic flow charts like good computer
+scientists...
+
+#+begin_quote
+Nobody's going to do all that, you've got a lot of legacy code, so you start
+using new features in old code.
+#+end_quote
+
+** Mixed Paradigms
+
+*** Fortran 77
+
+#+begin_quote
+When I went back for my Masters degree is when I started using all the
+extensions that Fortran 77 had available. It was a big change.
+
+if-then-else was a newer feature that came along later than Fortran 66. Fortran
+66 only had arithmetic three-way tests but they didn't have if-then-else.
+#+end_quote
+
+*** Fortran 90 and Beyond
+
+#+begin_quote
+Fortran 90 and 95 added extensions for parallel programming, more advanced stuff
+for high-performance computing.
+
+And there were guys who were using pointers and things but I never did. My
+attitude was that this was not commercial programming, not something for some
+research institute, and unlikely to be followed up by somebody else. Really it
+was algorithm development. It was one-off stuff... Rarely did anything lead to
+something commercial. So often we'd have mixed [paradigm] code. Whatever we
+needed! I still use Fortran 66-style comments and code-alignment.
+#+end_quote
+
+** Surpassed by MATLAB in Academia
+
+#+begin_quote
+But we don't unleash programming languages on students anymore. We used to teach
+them BASIC or Fortran. Now, if it's some numerical analysis course, we'll just
+give them some simple MATLAB script and they're happier with that.
+#+end_quote
+
+* The Language
+
+The following code samples should be considered "Fortran 90 Standard". Indeed,
+the common extension for a Fortran file today, regardless of version, is =.f90=.
+
+** Types
+
+Fortran is _strongly typed_.
+
+#+begin_src f90
+program doomemacs
+   implicit none
+
+   integer :: amount
+   real :: pi
+   complex :: freq
+   character :: name
+   logical :: isOkay
+
+   amount = 37
+   pi = 3.1415
+   freq = (1.0, -0.5)
+   name = "Jack"
+   isOkay = .true.
+end program doomemacs
+#+end_src
+
+What do we notice here?
+
+** Loops
+
+*** ~DO~ loops
+
+I grew up hearing about these damn things. Apparently ~for~ loops are for nerds.
+
+#+begin_src f90
+integer :: i
+
+do i = 1, 10
+   print *, i
+end do
+#+end_src
+
+*** Parallelizable Loops
+
+#+begin_src f90
+real, parameter :: pi = 3.14159265
+integer, parameter :: n = 10
+real :: result_sin(n) ! This is an array.
+integer :: i
+
+do concurrent(i=1:n)
+   result_sin(i) = sin(i*pi/4.)
+end do
+
+print *, result_sin
+#+end_src
+
+** Procedures
+
+Fortran differentiates between functions and subroutines. For the
+Haskell-minded, functions are pure, while subroutines return ~IO ()~.
+
+*** Subroutines
+
+#+begin_src f90
+! Print matrix A to screen
+subroutine print_matrix(n,m,A)
+  implicit none
+  integer, intent(in) :: n
+  integer, intent(in) :: m
+  real, intent(in) :: A(n, m)
+
+  integer :: i
+
+  do i = 1, n
+    print *, A(i, 1:m)
+  end do
+
+end subroutine print_matrix
+#+end_src
+
+Notice the Haskell-like =DataKinds= here with the Matrix dimensions.
+
+*** Functions
+
+#+begin_src f90
+! L2 Norm of a vector
+function vector_norm(n, vec) result(norm)
+   implicit none
+   integer, intent(in) :: n
+   real, intent(in) :: vec(n)
+   real :: norm
+
+   norm = sqrt(sum(vec**2))
+
+end function vector_norm
+#+end_src
+
+Functions can also be marked with the ~pure~ keyword, which forbids IO functions
+at compile time.
+
+*** Derived Types (structs)
+
+#+begin_src f90
+type :: t_pair
+   integer :: i
+   real :: x
+contains
+   subroutine doom()
+      print *, self%i
+   end subroutine doom
+end type t_pair
+#+end_src
+
+#+begin_src f90
+type(t_pair) :: pair
+
+pair%i = 1
+pair%x = 0.5
+pair%doom()
+#+end_src
+
+~%~ is used to access struct fields. It's also possible to define methods.
+
+** Fun Facts
+
+*** Case Insensitivity
+
+Fortran code is case insensitive!
+
+#+begin_src fortran
+      SUBROUTINE AX(A,B,W,ND,M,N)
+C SUBROUTNINE MATVM (MATRIX VECTOR MULTIPLY)
+C AB=W, ANSWER IS RETURNED IN W VECTOR
+C FOR N BY N MATRIX
+      IMPLICIT REAL*8 (A-H,O-Z)
+      DIMENSION A(ND,N),B(N),W(M)
+      DO 10 I=1,M
+      SUM=0.D0
+      DO 20 J=1,N
+ 20   SUM=SUM+A(I,J)*B(J)
+      W(I)=SUM
+ 10   CONTINUE
+      RETURN
+      END
+#+end_src
+
+*** Implicit Typing
+
+Unless told otherwise with ~implicit none~, the type of a variable is decided by
+the letter its name starts with.
+
+You can also override the implicit rules:
+
+#+begin_src fortran
+! Fortran 77? Maybe?
+IMPLICIT REAL*8 (A-H,O-Z)
+#+end_src
+
+Either way, implicit typing is considered bad practice in modern Fortran.
+
+*** Arrays are One-based
+
+But you can specify custom bounds:
+
+#+begin_src f90
+real :: array4(0:9)
+real :: array5(-5:5)
+#+end_src
+
+* Software Development in Modern Fortran
+
+** The Fortran Package Manager
+
+Fortran now has [[https://github.com/fortran-lang/fpm][fpm]], a project management tool based on =cargo=. The experience is
+basically the same.
+
+/Show example./
+
+We can use =fpm install= to install tools built in Fortran, and they go to
+=~/.local/bin= as you'd expect.
+
+** Unit Testing
+
+/Show example./
+
+** Libraries
+
+There is an online [[https://fortran-lang.org/packages/][Package Registry]] and some [[https://www.everythingfunctional.com/about.html][really active people]] doing their
+best to improve Fortran.

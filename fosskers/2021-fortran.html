@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>DadLang (I Mean Fortran)</title>
+<meta name="author" content="Colin Woodbury"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/black.css" id="theme"/>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1 class="title">DadLang (I Mean Fortran)</h1><h2 class="author">Colin Woodbury</h2><h2 class="date">2021-12-18</h2><p class="date">Created: 2021-12-27 Mon 23:34</p>
+</section>
+
+<section>
+<section id="slide-org325e464">
+<h2 id="org325e464">Fortran</h2>
+<p>
+In celebration of the brand new <code>fortran</code> module&#x2026;
+</p>
+
+<blockquote>
+<p>
+In FORTRAN, GOD is REAL (unless declared INTEGER).
+</p>
+</blockquote>
+
+
+<div id="org03fcbf8" class="figure">
+<p><img src="subroutine.jpg" alt="subroutine.jpg" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org45c29b0">
+<h2 id="org45c29b0">Overview</h2>
+<ul>
+<li>History of Fortran</li>
+<li>The Language Itself</li>
+<li>Software Development in Modern Fortran</li>
+
+</ul>
+
+</section>
+<section id="slide-org98483b9">
+<h3 id="org98483b9">Sample</h3>
+<div class="org-src-container">
+
+<pre class="src src-f90"><span style="color: #b877db; font-style: italic;">program</span> <span style="color: #87ceeb;">main</span>
+   <span style="color: #6c6f93; background-color: #292b36; font-style: italic;">! </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">Declaring which lib files and procedures to import.</span>
+   <span style="color: #b877db; font-style: italic;">use</span> <span style="color: #87ceeb;">hello_fpm</span>, <span style="color: #b877db; font-style: italic;">only</span>: say_hello
+   <span style="color: #6c6f93; background-color: #292b36; font-style: italic;">! </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">Suppress naughty legacy rules.</span>
+   <span style="color: #b877db; font-style: italic;">implicit</span> <span style="color: #87ceeb;">none</span>
+
+   <span style="color: #6c6f93; background-color: #292b36; font-style: italic;">! </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">Call a subroutine! Just like the movies!</span>
+   <span style="color: #b877db; font-style: italic;">call</span> <span style="color: #87ceeb;">say_hello</span>()
+<span style="color: #b877db; font-style: italic;">end program</span> <span style="color: #87ceeb;">main</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-f90"><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">! </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">Module definition.</span>
+<span style="color: #b877db; font-style: italic;">module</span> <span style="color: #87ceeb;">hello_fpm</span>
+   <span style="color: #b877db; font-style: italic;">implicit</span> <span style="color: #87ceeb;">none</span>
+   <span style="color: #6c6f93; background-color: #292b36; font-style: italic;">! </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">Make everything module-private by default.</span>
+   <span style="color: #b877db; font-style: italic;">private</span>
+   <span style="color: #6c6f93; background-color: #292b36; font-style: italic;">! </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">Explicit exports.</span>
+   <span style="color: #b877db; font-style: italic;">public</span> :: say_hello
+<span style="color: #b877db; font-style: italic;">contains</span>
+   <span style="color: #b877db; font-style: italic;">subroutine</span> <span style="color: #87ceeb;">say_hello</span>
+      <span style="color: #6c6f93; background-color: #292b36; font-style: italic;">! </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">Some IO</span>
+      <span style="color: #b877db; font-style: italic;">print</span> *, <span style="color: #fab795;">"Hello, Doom Emacs!"</span>
+   <span style="color: #b877db; font-style: italic;">end subroutine</span> <span style="color: #87ceeb;">say_hello</span>
+<span style="color: #b877db; font-style: italic;">end module</span> <span style="color: #87ceeb;">hello_fpm</span>
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org990bb97">
+<h2 id="org990bb97">History</h2>
+<div class="outline-text-2" id="text-org990bb97">
+</div>
+</section>
+<section id="slide-org62c3671">
+<h3 id="org62c3671">Fortran is Old</h3>
+<blockquote>
+<p>
+I graduated in &rsquo;73&#x2026; About that time I took <i>Fortran Programming</i> before I took a
+summer job, as a standalone Engineering course. The class was full.
+</p>
+
+<p>
+There was a big card reader and there were massive rooms of key-punch machines.
+So you had to grab one and then take your boxes down there, and you had all your
+code on big pieces of paper and you&rsquo;d have to punch it out. You&rsquo;d make mistakes.
+That would&rsquo;ve been Fortran 66.
+</p>
+</blockquote>
+
+<p>
+Fortran is old (older than Lisp!) but has evolved through the decades and mostly
+kept up.
+</p>
+
+</section>
+<section id="slide-org828cc7a">
+<h4 id="org828cc7a">Fortran 66 Sample</h4>
+<p>
+The indenting is on purpose.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-fortran">      <span style="color: #b877db; font-style: italic;">SUBROUTINE</span> <span style="color: #87ceeb;">MATADD</span>(A,V,ND,MD,N)
+      <span style="color: #87ceeb;">IMPLICIT REAL</span>*<span style="color: #f09383; font-weight: bold;">8</span> (A-H,O-Z)
+      <span style="color: #87ceeb;">DIMENSION</span> <span style="color: #e95678;">A</span>(ND,N), <span style="color: #e95678;">V</span>(MD,N)
+      <span style="color: #b877db; font-style: italic;">DO</span> <span style="color: #f09383; font-weight: bold;">10</span> J=<span style="color: #f09383; font-weight: bold;">1</span>,N
+      <span style="color: #b877db; font-style: italic;">DO</span> <span style="color: #f09383; font-weight: bold;">20</span> I=<span style="color: #f09383; font-weight: bold;">1</span>,N
+      A(I,J)=A(I,J)+V(I,J)
+  <span style="color: #f09383; font-weight: bold;">20</span>  <span style="color: #b877db; font-style: italic;">CONTINUE</span>
+  <span style="color: #f09383; font-weight: bold;">10</span>  <span style="color: #b877db; font-style: italic;">CONTINUE</span>
+      <span style="color: #b877db; font-style: italic;">RETURN</span>
+      <span style="color: #b877db; font-style: italic;">END</span>
+</pre>
+</div>
+
+</section>
+<section id="slide-org7167d53">
+<h3 id="org7167d53">Fortran was First for Real Research</h3>
+<blockquote>
+<p>
+All of my days at BC Hydro were in Fortran 66. And I did thousands and thousands
+of lines of Fortran code. It got to the point that that was all I was doing. I
+was doing a lot of analysis and there were no pen-and-paper options, you just
+had to code it.
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+Fortran was extremely common amongst my colleagues and the people in
+Engineering. There was absolutely no need to look at anything else.
+</p>
+</blockquote>
+
+</section>
+<section id="slide-org31315ec">
+<h3 id="org31315ec">Tedious Programming</h3>
+<p>
+Daily programming tasks are a lot nicer today. Back in the old days&#x2026;
+</p>
+
+</section>
+<section id="slide-org7fbefd4">
+<h4 id="org7fbefd4">Array Processors</h4>
+<blockquote>
+<p>
+There were big breakthroughs in the 60s with Array Processors. So before you had
+those [matrix primitives] embedded in the language you&rsquo;d have to call up an
+Array Processor, a separate machine, and it was a nightmare trying to debug all
+these things. The calling stuff had to be absolutely perfect&#x2026; and even then it
+didn&rsquo;t work! Haha.
+</p>
+</blockquote>
+
+</section>
+<section id="slide-org6c3c537">
+<h4 id="org6c3c537">RAM</h4>
+<blockquote>
+<p>
+At one time RAM memory was at a premium. We&rsquo;d be working with Arrays of
+dimension 100,000 or so, and you had to avoid swapping to disk. Sometimes we&rsquo;d
+write Arrays out to a secondary device and then read them back in later on. It
+could have been tape at the time, although later on it wasn&rsquo;t.
+</p>
+</blockquote>
+
+</section>
+<section id="slide-orga9e5500">
+<h3 id="orga9e5500">Decades of Legacy Code</h3>
+<blockquote>
+<p>
+But programming [during my career] was just one part of the job, we had lots of
+things to do. If someone could say that I could program in Fox Basic
+Zipzeedoodle and it could save me 100x running time, then I&rsquo;d do it! But nobody
+could ever really say that to me. Nobody could say &ldquo;switch to C++ and save all
+this time&rdquo;, it just doesn&rsquo;t happen.
+</p>
+</blockquote>
+
+<p>
+There are untold millions of lines of Fortran out there running in various
+research institutes and government agencies. Too much to rewrite. So instead of
+coming up with nice designs and logic flow charts like good computer
+scientists&#x2026;
+</p>
+
+<blockquote>
+<p>
+Nobody&rsquo;s going to do all that, you&rsquo;ve got a lot of legacy code, so you start
+using new features in old code.
+</p>
+</blockquote>
+
+</section>
+<section id="slide-orgdced78c">
+<h3 id="orgdced78c">Mixed Paradigms</h3>
+<div class="outline-text-3" id="text-orgdced78c">
+</div>
+</section>
+<section id="slide-org0e6556d">
+<h4 id="org0e6556d">Fortran 77</h4>
+<blockquote>
+<p>
+When I went back for my Masters degree is when I started using all the
+extensions that Fortran 77 had available. It was a big change.
+</p>
+
+<p>
+if-then-else was a newer feature that came along later than Fortran 66. Fortran
+66 only had arithmetic three-way tests but they didn&rsquo;t have if-then-else.
+</p>
+</blockquote>
+
+</section>
+<section id="slide-org02d0d27">
+<h4 id="org02d0d27">Fortran 90 and Beyond</h4>
+<blockquote>
+<p>
+Fortran 90 and 95 added extensions for parallel programming, more advanced stuff
+for high-performance computing.
+</p>
+
+<p>
+And there were guys who were using pointers and things but I never did. My
+attitude was that this was not commercial programming, not something for some
+research institute, and unlikely to be followed up by somebody else. Really it
+was algorithm development. It was one-off stuff&#x2026; Rarely did anything lead to
+something commercial. So often we&rsquo;d have mixed [paradigm] code. Whatever we
+needed! I still use Fortran 66-style comments and code-alignment.
+</p>
+</blockquote>
+
+</section>
+<section id="slide-org684522c">
+<h3 id="org684522c">Surpassed by MATLAB in Academia</h3>
+<blockquote>
+<p>
+But we don&rsquo;t unleash programming languages on students anymore. We used to teach
+them BASIC or Fortran. Now, if it&rsquo;s some numerical analysis course, we&rsquo;ll just
+give them some simple MATLAB script and they&rsquo;re happier with that.
+</p>
+</blockquote>
+
+</section>
+</section>
+<section>
+<section id="slide-org2336676">
+<h2 id="org2336676">The Language</h2>
+<p>
+The following code samples should be considered &ldquo;Fortran 90 Standard&rdquo;. Indeed,
+the common extension for a Fortran file today, regardless of version, is <code>.f90</code>.
+</p>
+
+</section>
+<section id="slide-orgbb9d271">
+<h3 id="orgbb9d271">Types</h3>
+<p>
+Fortran is <span class="underline">strongly typed</span>.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-f90"><span style="color: #b877db; font-style: italic;">program</span> <span style="color: #87ceeb;">doomemacs</span>
+   <span style="color: #b877db; font-style: italic;">implicit</span> <span style="color: #87ceeb;">none</span>
+
+   <span style="color: #87ceeb;">integer</span> ::<span style="color: #e95678;"> amount</span>
+   <span style="color: #87ceeb;">real</span> ::<span style="color: #e95678;"> pi</span>
+   <span style="color: #87ceeb;">complex</span> ::<span style="color: #e95678;"> freq</span>
+   <span style="color: #87ceeb;">character</span> ::<span style="color: #e95678;"> name</span>
+   <span style="color: #87ceeb;">logical</span> ::<span style="color: #e95678;"> isOkay</span>
+
+   amount = <span style="color: #f09383; font-weight: bold;">37</span>
+   pi = <span style="color: #f09383; font-weight: bold;">3.1415</span>
+   freq = (<span style="color: #f09383; font-weight: bold;">1.0</span>, -<span style="color: #f09383; font-weight: bold;">0.5</span>)
+   name = <span style="color: #fab795;">"Jack"</span>
+   isOkay = <span style="color: #b877db; font-style: italic;">.true.</span>
+<span style="color: #b877db; font-style: italic;">end program</span> <span style="color: #87ceeb;">doomemacs</span>
+</pre>
+</div>
+
+<p>
+What do we notice here?
+</p>
+
+</section>
+<section id="slide-org1b9cad8">
+<h3 id="org1b9cad8">Loops</h3>
+<div class="outline-text-3" id="text-org1b9cad8">
+</div>
+</section>
+<section id="slide-org626e701">
+<h4 id="org626e701"><code>DO</code> loops</h4>
+<p>
+I grew up hearing about these damn things. Apparently <code>for</code> loops are for nerds.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-f90"><span style="color: #87ceeb;">integer</span> ::<span style="color: #e95678;"> i</span>
+
+<span style="color: #b877db; font-style: italic;">do</span> i = <span style="color: #f09383; font-weight: bold;">1</span>, <span style="color: #f09383; font-weight: bold;">10</span>
+   <span style="color: #b877db; font-style: italic;">print</span> *, i
+<span style="color: #b877db; font-style: italic;">end do</span>
+</pre>
+</div>
+
+</section>
+<section id="slide-org0a0d6da">
+<h4 id="org0a0d6da">Parallelizable Loops</h4>
+<div class="org-src-container">
+
+<pre class="src src-f90"><span style="color: #87ceeb;">real</span>, <span style="color: #b877db; font-style: italic;">parameter</span> ::<span style="color: #e95678;"> pi = 3.14159265</span>
+<span style="color: #87ceeb;">integer</span>, <span style="color: #b877db; font-style: italic;">parameter</span> ::<span style="color: #e95678;"> n = 10</span>
+<span style="color: #87ceeb;">real</span> ::<span style="color: #e95678;"> result_sin(n) </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">! </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">This is an array.</span>
+<span style="color: #87ceeb;">integer</span> ::<span style="color: #e95678;"> i</span>
+
+<span style="color: #b877db; font-style: italic;">do</span> <span style="color: #b877db; font-style: italic;">concurrent</span>(i=<span style="color: #f09383; font-weight: bold;">1</span>:n)
+   result_sin(i) = <span style="color: #b877db; font-style: italic;">sin</span>(i*pi/<span style="color: #f09383; font-weight: bold;">4</span>.)
+<span style="color: #b877db; font-style: italic;">end do</span>
+
+<span style="color: #b877db; font-style: italic;">print</span> *, result_sin
+</pre>
+</div>
+
+</section>
+<section id="slide-org099b9bc">
+<h3 id="org099b9bc">Procedures</h3>
+<p>
+Fortran differentiates between functions and subroutines. For the
+Haskell-minded, functions are pure, while subroutines return <code>IO ()</code>.
+</p>
+
+</section>
+<section id="slide-org8ac8a2f">
+<h4 id="org8ac8a2f">Subroutines</h4>
+<div class="org-src-container">
+
+<pre class="src src-f90"><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">! </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">Print matrix A to screen</span>
+<span style="color: #b877db; font-style: italic;">subroutine</span> <span style="color: #87ceeb;">print_matrix</span>(n,m,A)
+  <span style="color: #b877db; font-style: italic;">implicit</span> <span style="color: #87ceeb;">none</span>
+  <span style="color: #87ceeb;">integer</span>, <span style="color: #b877db; font-style: italic;">intent</span>(in) ::<span style="color: #e95678;"> n</span>
+  <span style="color: #87ceeb;">integer</span>, <span style="color: #b877db; font-style: italic;">intent</span>(in) ::<span style="color: #e95678;"> m</span>
+  <span style="color: #87ceeb;">real</span>, <span style="color: #b877db; font-style: italic;">intent</span>(in) ::<span style="color: #e95678;"> A(n, m)</span>
+
+  <span style="color: #87ceeb;">integer</span> ::<span style="color: #e95678;"> i</span>
+
+  <span style="color: #b877db; font-style: italic;">do</span> i = <span style="color: #f09383; font-weight: bold;">1</span>, n
+    <span style="color: #b877db; font-style: italic;">print</span> *, A(i, <span style="color: #f09383; font-weight: bold;">1</span>:m)
+  <span style="color: #b877db; font-style: italic;">end do</span>
+
+<span style="color: #b877db; font-style: italic;">end subroutine</span> <span style="color: #87ceeb;">print_matrix</span>
+</pre>
+</div>
+
+<p>
+Notice the Haskell-like <code>DataKinds</code> here with the Matrix dimensions.
+</p>
+
+</section>
+<section id="slide-org6d517d0">
+<h4 id="org6d517d0">Functions</h4>
+<div class="org-src-container">
+
+<pre class="src src-f90"><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">! </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">L2 Norm of a vector</span>
+<span style="color: #b877db; font-style: italic;">function</span> <span style="color: #87ceeb;">vector_norm</span>(n, vec) <span style="color: #b877db; font-style: italic;">result</span>(norm)
+   <span style="color: #b877db; font-style: italic;">implicit</span> <span style="color: #87ceeb;">none</span>
+   <span style="color: #87ceeb;">integer</span>, <span style="color: #b877db; font-style: italic;">intent</span>(in) ::<span style="color: #e95678;"> n</span>
+   <span style="color: #87ceeb;">real</span>, <span style="color: #b877db; font-style: italic;">intent</span>(in) ::<span style="color: #e95678;"> vec(n)</span>
+   <span style="color: #87ceeb;">real</span> ::<span style="color: #e95678;"> norm</span>
+
+   norm = <span style="color: #b877db; font-style: italic;">sqrt</span>(<span style="color: #b877db; font-style: italic;">sum</span>(vec**<span style="color: #f09383; font-weight: bold;">2</span>))
+
+<span style="color: #b877db; font-style: italic;">end function</span> <span style="color: #87ceeb;">vector_norm</span>
+</pre>
+</div>
+
+<p>
+Functions can also be marked with the <code>pure</code> keyword, which forbids IO functions
+at compile time.
+</p>
+
+</section>
+<section id="slide-org5977bd4">
+<h4 id="org5977bd4">Derived Types (structs)</h4>
+<div class="org-src-container">
+
+<pre class="src src-f90"><span style="color: #b877db; font-style: italic;">type</span> :: <span style="color: #87ceeb;">t_pair</span>
+   <span style="color: #87ceeb;">integer</span> ::<span style="color: #e95678;"> i</span>
+   <span style="color: #87ceeb;">real</span> ::<span style="color: #e95678;"> x</span>
+<span style="color: #b877db; font-style: italic;">contains</span>
+   <span style="color: #b877db; font-style: italic;">subroutine</span> <span style="color: #87ceeb;">doom</span>()
+      <span style="color: #b877db; font-style: italic;">print</span> *, self%i
+   <span style="color: #b877db; font-style: italic;">end subroutine</span> <span style="color: #87ceeb;">doom</span>
+<span style="color: #b877db; font-style: italic;">end type</span> <span style="color: #87ceeb;">t_pair</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-f90"><span style="color: #87ceeb;">type(t_pair)</span> :: <span style="color: #e95678;">pair</span>
+
+pair%i = <span style="color: #f09383; font-weight: bold;">1</span>
+pair%x = <span style="color: #f09383; font-weight: bold;">0.5</span>
+pair%doom()
+</pre>
+</div>
+
+<p>
+<code>%</code> is used to access struct fields. It&rsquo;s also possible to define methods.
+</p>
+
+</section>
+<section id="slide-org3345295">
+<h3 id="org3345295">Fun Facts</h3>
+<div class="outline-text-3" id="text-org3345295">
+</div>
+</section>
+<section id="slide-org1dd1812">
+<h4 id="org1dd1812">Case Insensitivity</h4>
+<p>
+Fortran code is case insensitive!
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-fortran">      <span style="color: #b877db; font-style: italic;">SUBROUTINE</span> <span style="color: #87ceeb;">AX</span>(A,B,W,ND,M,N)
+<span style="color: #6c6f93; background-color: #292b36; font-style: italic;">C </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">SUBROUTNINE MATVM (MATRIX VECTOR MULTIPLY)</span>
+<span style="color: #6c6f93; background-color: #292b36; font-style: italic;">C </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">AB=W, ANSWER IS RETURNED IN W VECTOR</span>
+<span style="color: #6c6f93; background-color: #292b36; font-style: italic;">C </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">FOR N BY N MATRIX</span>
+      <span style="color: #87ceeb;">IMPLICIT REAL</span>*<span style="color: #f09383; font-weight: bold;">8</span> (A-H,O-Z)
+      <span style="color: #87ceeb;">DIMENSION</span> <span style="color: #e95678;">A</span>(ND,N),<span style="color: #e95678;">B</span>(N),<span style="color: #e95678;">W</span>(M)
+      <span style="color: #b877db; font-style: italic;">DO</span> <span style="color: #f09383; font-weight: bold;">10</span> I=<span style="color: #f09383; font-weight: bold;">1</span>,M
+      SUM=0.D0
+      <span style="color: #b877db; font-style: italic;">DO</span> <span style="color: #f09383; font-weight: bold;">20</span> J=<span style="color: #f09383; font-weight: bold;">1</span>,N
+ <span style="color: #f09383; font-weight: bold;">20</span>   SUM=SUM+A(I,J)*B(J)
+      W(I)=SUM
+ <span style="color: #f09383; font-weight: bold;">10</span>   <span style="color: #b877db; font-style: italic;">CONTINUE</span>
+      <span style="color: #b877db; font-style: italic;">RETURN</span>
+      <span style="color: #b877db; font-style: italic;">END</span>
+</pre>
+</div>
+
+</section>
+<section id="slide-orgb56bdc2">
+<h4 id="orgb56bdc2">Implicit Typing</h4>
+<p>
+Unless told otherwise with <code>implicit none</code>, the type of a variable is decided by
+the letter its name starts with.
+</p>
+
+<p>
+You can also override the implicit rules:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-fortran"><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">! </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">Fortran 77? Maybe?</span>
+<span style="color: #87ceeb;">IMPLICIT REAL</span>*<span style="color: #f09383; font-weight: bold;">8</span> (A-H,O-Z)
+</pre>
+</div>
+
+<p>
+Either way, implicit typing is considered bad practice in modern Fortran.
+</p>
+
+</section>
+<section id="slide-org71aa716">
+<h4 id="org71aa716">Arrays are One-based</h4>
+<p>
+But you can specify custom bounds:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-f90"><span style="color: #87ceeb;">real</span> ::<span style="color: #e95678;"> array4(0:9)</span>
+<span style="color: #87ceeb;">real</span> ::<span style="color: #e95678;"> array5(-5:5)</span>
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orge0ca655">
+<h2 id="orge0ca655">Software Development in Modern Fortran</h2>
+<div class="outline-text-2" id="text-orge0ca655">
+</div>
+</section>
+<section id="slide-org9497a6c">
+<h3 id="org9497a6c">The Fortran Package Manager</h3>
+<p>
+Fortran now has <a href="https://github.com/fortran-lang/fpm">fpm</a>, a project management tool based on <code>cargo</code>. The experience is
+basically the same.
+</p>
+
+<p>
+<i>Show example.</i>
+</p>
+
+<p>
+We can use <code>fpm install</code> to install tools built in Fortran, and they go to
+<code>~/.local/bin</code> as you&rsquo;d expect.
+</p>
+
+</section>
+<section id="slide-orgae851c7">
+<h3 id="orgae851c7">Unit Testing</h3>
+<p>
+<i>Show example.</i>
+</p>
+
+</section>
+<section id="slide-org4c396c1">
+<h3 id="org4c396c1">Libraries</h3>
+<p>
+There is an online <a href="https://fortran-lang.org/packages/">Package Registry</a> and some <a href="https://www.everythingfunctional.com/about.html">really active people</a> doing their
+best to improve Fortran.
+</p>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/search/search.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom/zoom.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+overview: true,
+width: 1200,
+height: 1080,
+
+transition: 'slide',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>
