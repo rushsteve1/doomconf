@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html class="no-js" lang="en">
   <head>
     <meta charset="utf-8" />
@@ -29,7 +30,7 @@
       <h1>DoomConf Febuary 2022</h1>
 
       <h2>* When is it?</h2>
-      <p><a href="./doom-conf.ics">[[Feb 19th 2pm - 5pm gmt]]</a></p>
+      <p><a href="./doom-conf.ics" id="time"></a></p>
 
       <h2>* Where is it?</h2>
       <p>
@@ -84,7 +85,15 @@
 
     <footer>
       <div>PR on <a href="https://github.com/rushsteve1/doomconf">[[GitHub]]</a></div>
-      <div>This site made using <a href="https://github.com/hlissner/doom-emacs">[[DOOM Emacs]]</a><div>
+      <div>
+        This site made using <a href="https://github.com/hlissner/doom-emacs">[[DOOM Emacs]]</a>
+      </div>
     </footer>
+
+    <script type="text/javascript" src="./date.js"></script>
+    <script type="text/javascript">
+     dateString("2022-02-19T14:00:00", "2022-02-19T17:00:00")
+    </script>
   </body>
+
 </html>
