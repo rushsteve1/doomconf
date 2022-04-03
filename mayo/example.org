@@ -1,0 +1,7 @@
+#+TITLE: Example
+
+* TODO Annoying task that I should do
+* TODO Fun task
+* TODO Pay bills
+* TODO Return book to library
+* TODO Deal with feedback: [[notmuch:id:20211209204319.168897-1-sourcehut@relevant-information.com][Email from sourcehut@relevant-information.com: [PATCH 0/1] Use notmuch-extract-patch if available]]

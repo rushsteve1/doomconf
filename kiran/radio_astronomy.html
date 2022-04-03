@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Radio Astronomy</title>
+  <meta name="author" content="Kiran Shila">
+  <style type="text/css">
+  .underline { text-decoration: underline; }
+  </style>
+  <link rel="stylesheet" href=
+  "/home/kiran/.emacs.d/.local/straight/build-28.0.91/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href=
+  "/home/kiran/.emacs.d/.local/straight/build-28.0.91/revealjs/dist/theme/black.css"
+  id="theme">
+  <script type="text/javascript" src=
+  "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section id="sec-title-slide">
+        <h1 class="title">Radio Astronomy</h1>
+        <h2 class="author">Kiran Shila</h2>
+        <p class="date">Created: 2022-02-19 Sat 06:20</p>
+      </section>
+      <section>
+        <section id="slide-1">
+          <h2 id="1"><span class="section-number-2">1.</span>
+          Introduction</h2>
+          <div class="outline-text-2" id="text-1"></div>
+        </section>
+        <section id="slide-1-1">
+          <h3 id="1-1"><span class="section-number-3">1.1.</span>
+          Me</h3>
+          <div id="org04ba644" class="figure">
+            <p><img src="./kiran.jpg" alt="kiran.jpg" width=
+            "300px"></p>
+          </div>
+          <ul>
+            <li>EE PhD student @ Caltech</li>
+            <li>Background in wireless engineering</li>
+          </ul>
+        </section>
+      </section>
+      <section>
+        <section id="slide-2">
+          <h2 id="2"><span class="section-number-2">2.</span> How
+          does a radio telescope work?</h2>
+          <div class="outline-text-2" id="text-2"></div>
+        </section>
+        <section id="slide-2-1">
+          <h3 id="2-1"><span class="section-number-3">2.1.</span>
+          Noise</h3>
+          <p>Astronomical objects are blackbody sources</p>
+          <p>For low frequency, Raleigh-Jeans (\(h\nu \ll kT\)),
+          spectral brightness is \(B_{\nu}(T) \approx
+          \frac{2kT}{\lambda^{2}}\) (linear with temp)</p>
+        </section>
+        <section id="slide-2-2">
+          <h3 id="2-2"><span class="section-number-3">2.2.</span>
+          Space Noise</h3>
+          <p>The radio emission from (most) astronomical sources is
+          a stationary random process. (long timescales == steady
+          mean power)</p>
+          <p>This noise is indistinguishable from thermal noise
+          (like that of the system).</p>
+        </section>
+        <section id="slide-2-3">
+          <h3 id="2-3"><span class="section-number-3">2.3.</span>
+          Noise Confusion</h3>
+          <p>Every part of the system adds noise.</p>
+          <ul>
+            <li>Cosmic microwave background</li>
+            <li>Galactic emission</li>
+            <li>Thermal behavior of the ground</li>
+            <li>Oxygen absorption</li>
+            <li>Physical antenna temperature</li>
+            <li>Receiver electronics</li>
+          </ul>
+          <p>Total noise added by the system is the <b>System
+          Noise</b> \(T_{s}\)</p>
+        </section>
+        <section id="slide-2-4">
+          <h3 id="2-4"><span class="section-number-3">2.4.</span>
+          Radiometer</h3>
+          <p>A radio telescope <b>is</b> a radiometer.</p>
+          <p>\(\sigma_{T} \approx \frac{T_{s}}{\sqrt{\Delta\nu
+          t}}\)</p>
+          <p>Large bandwidths and integration time improve
+          sensitivity</p>
+        </section>
+        <section id="slide-2-4-1">
+          <h4 id="2-4-1"><span class=
+          "section-number-4">2.4.1.</span> Example</h4>
+          <p>If \(T_{s} \approx 30K\), and we observe for 5 seconds
+          at 1 kHz of bandwidth: \(\sigma_{T} =
+          2*10^{-4}*T_{s}\)</p>
+          <p>If we want \(5\sigma\), that’s \(0.03K\) of
+          sensitivity.</p>
+          <p>Consider Johnson-Nyquist noise power \(P =
+          kT_{source}\delta \nu \approx 10^{-14}\) W</p>
+        </section>
+        <section id="slide-2-5">
+          <h3 id="2-5"><span class="section-number-3">2.5.</span>
+          Receiver Design (my work)</h3>
+          <p>The low noise amplifier (LNA) and antenna contribute
+          the most to the system noise. I work primarily on
+          world-class room temperature LNAs. <img src="./lna.png"
+          alt="lna.png"></p>
+        </section>
+      </section>
+      <section>
+        <section id="slide-3">
+          <h2 id="3"><span class="section-number-2">3.</span> Radio
+          Interferometry and Aperture Synthesis</h2>
+          <div class="outline-text-2" id="text-3"></div>
+        </section>
+        <section id="slide-3-1">
+          <h3 id="3-1"><span class="section-number-3">3.1.</span>
+          Big Telescope Hard</h3>
+          <p>Rayleigh Criterion \(\theta \approx 1.22
+          \frac{\lambda}{D}\)</p>
+        </section>
+        <section id="slide-3-2">
+          <h3 id="3-2"><span class="section-number-3">3.2.</span>
+          Arrays to the rescue</h3>
+          <p>van Cittert Zernike (Statistical Optics) \(V \approx
+          \iint I_{\nu}e^{-2i\pi(ul +
+          vm)}dldm=F(I_{\nu}(l,m))\)</p>
+        </section>
+        <section id="slide-3-2-1">
+          <h4 id="3-2-1"><span class=
+          "section-number-4">3.2.1.</span> Long Wavelength
+          Array</h4>
+          <div id="org401871a" class="figure">
+            <p><img src="./lwa.jpg" alt="lwa.jpg"></p>
+          </div>
+        </section>
+        <section id="slide-3-2-2">
+          <h4 id="3-2-2"><span class=
+          "section-number-4">3.2.2.</span> UV Coverage</h4>
+          <div id="org105aa8c" class="figure">
+            <p><img src="./uv.png" alt="uv.png" width="500px"></p>
+          </div>
+        </section>
+        <section id="slide-3-2-3">
+          <h4 id="3-2-3"><span class=
+          "section-number-4">3.2.3.</span> Synthesized Beam</h4>
+          <div id="orga047f8b" class="figure">
+            <p><img src="./uv_fft.png" alt="uv_fft.png" width=
+            "500px"></p>
+          </div>
+        </section>
+        <section id="slide-3-3">
+          <h3 id="3-3"><span class="section-number-3">3.3.</span>
+          Compressed Sensing</h3>
+          <div id="org75150c0" class="figure">
+            <p><img src="./dirty_map.png" alt="dirty_map.png"
+            width="500px"></p>
+          </div>
+        </section>
+        <section id="slide-3-4">
+          <h3 id="3-4"><span class="section-number-3">3.4.</span>
+          Maximum Entropy</h3>
+          <p>Reformulate the problem as constrained, non linear
+          optimization \(S = -\Sigma I \log{\frac{I}{P}}\)</p>
+        </section>
+        <section id="slide-3-5">
+          <h3 id="3-5"><span class="section-number-3">3.5.</span>
+          Solve in Julia</h3>
+          <div class="org-src-container">
+            <pre class="src src-julia"><span style=
+            "color: #ff79c6;">function</span> <span style=
+            "color: #50fa7b;">regularize</span>(model, prior, total_flux)
+    entropy_loss = βent <span style=
+"color: #bd93f9;">*</span> entropy(model,prior)
+    flux_loss = βflux <span style=
+"color: #bd93f9;">*</span> flux(model,total_flux)
+    total_variance_loss = βtv <span style=
+"color: #bd93f9;">*</span> total_variance(model)
+    <span style=
+"color: #ff79c6;">return</span> entropy_loss <span style=
+"color: #bd93f9;">+</span> flux_loss <span style=
+"color: #bd93f9;">+</span> total_variance_loss
+<span style="color: #ff79c6;">end</span>
+
+Zygote.gradient(x <span style=
+"color: #bd93f9;">-&gt;</span> regularize(x, prior, total_flux), model)
+</pre>
+          </div>
+        </section>
+        <section id="slide-3-6">
+          <h3 id="3-6"><span class="section-number-3">3.6.</span>
+          SgrA*</h3>
+          <div id="org1b992f1" class="figure">
+            <p><img src="./sgra.png" alt="sgra.png"></p>
+          </div>
+        </section>
+        <section id="slide-3-7">
+          <h3 id="3-7"><span class="section-number-3">3.7.</span>
+          M87*</h3>
+          <div id="orgc174f2a" class="figure">
+            <p><img src="./m87.png" alt="m87.png"></p>
+          </div>
+        </section>
+      </section>
+    </div>
+  </div>
+  <script src=
+  "/home/kiran/.emacs.d/.local/straight/build-28.0.91/revealjs/dist/reveal.js"></script>
+  
+  <script src=
+  "/home/kiran/.emacs.d/.local/straight/build-28.0.91/revealjs/plugin/markdown/markdown.js"></script>
+  
+  <script src=
+  "/home/kiran/.emacs.d/.local/straight/build-28.0.91/revealjs/plugin/notes/notes.js"></script>
+  
+  <script src=
+  "/home/kiran/.emacs.d/.local/straight/build-28.0.91/revealjs/plugin/search/search.js"></script>
+  
+  <script src=
+  "/home/kiran/.emacs.d/.local/straight/build-28.0.91/revealjs/plugin/zoom/zoom.js"></script>
+  
+  <script>
+
+  // Full list of configuration options available here:
+  // https://github.com/hakimel/reveal.js#configuration
+  Reveal.initialize({
+
+  controls: true,
+  progress: true,
+  history: false,
+  center: true,
+  slideNumber: 'c',
+  rollingLinks: false,
+  keyboard: true,
+  mouseWheel: false,
+  fragmentInURL: false,
+  hashOneBasedIndex: false,
+  pdfSeparateFragments: true,
+  overview: true,
+
+  transition: 'convex',
+  transitionSpeed: 'default',
+
+  // Plugins with reveal.js 4.x
+  plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+  // Optional libraries used to extend reveal.js
+  dependencies: [
+  ]
+
+  });
+  </script>
+</body>
+</html>

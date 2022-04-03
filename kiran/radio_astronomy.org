@@ -1,0 +1,92 @@
+#+TITLE: Radio Astronomy
+#+AUTHOR: Kiran Shila
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+
+#+REVEAL_INIT_OPTIONS: slideNumber:true
+#+options: toc:nil
+
+* Introduction
+** Me
+#+ATTR_HTML: :width 300px
+[[file:./kiran.jpg]]
+- EE PhD student @ Caltech
+- Background in wireless engineering
+* How does a radio telescope work?
+** Noise
+Astronomical objects are blackbody sources
+
+For low frequency, Raleigh-Jeans ($h\nu \ll kT$), spectral brightness is
+$B_{\nu}(T) \approx \frac{2kT}{\lambda^{2}}$ (linear with temp)
+
+** Space Noise
+The radio emission from (most) astronomical sources is a stationary random
+process. (long timescales == steady mean power)
+
+This noise is indistinguishable from thermal noise (like that of the system).
+
+** Noise Confusion
+Every part of the system adds noise.
+- Cosmic microwave background
+- Galactic emission
+- Thermal behavior of the ground
+- Oxygen absorption
+- Physical antenna temperature
+- Receiver electronics
+
+Total noise added by the system is the *System Noise* $T_{s}$
+
+** Radiometer
+A radio telescope *is* a radiometer.
+
+$\sigma_{T} \approx \frac{T_{s}}{\sqrt{\Delta\nu t}}$
+
+Large bandwidths and integration time improve sensitivity
+
+*** Example
+If $T_{s} \approx 30K$, and we observe for 5 seconds at 1 kHz of bandwidth:
+$\sigma_{T} = 2*10^{-4}*T_{s}$
+
+If we want $5\sigma$, that's $0.03K$ of sensitivity.
+
+Consider Johnson-Nyquist noise power
+$P = kT_{source}\delta \nu \approx 10^{-14}$ W
+** Receiver Design (my work)
+The low noise amplifier (LNA) and antenna contribute the most to the system
+noise. I work primarily on world-class room temperature LNAs.
+[[file:./lna.png]]
+* Radio Interferometry and Aperture Synthesis
+** Big Telescope Hard
+Rayleigh Criterion
+$\theta \approx 1.22 \frac{\lambda}{D}$
+** Arrays to the rescue
+van Cittert Zernike (Statistical Optics)
+$V \approx \iint I_{\nu}e^{-2i\pi(ul + vm)}dldm=F(I_{\nu}(l,m))$
+*** Long Wavelength Array
+[[file:./lwa.jpg]]
+*** UV Coverage
+#+ATTR_HTML: :width 500px
+[[file:./uv.png]]
+*** Synthesized Beam
+#+ATTR_HTML: :width 500px
+[[file:./uv_fft.png]]
+** Compressed Sensing
+#+ATTR_HTML: :width 500px
+[[file:./dirty_map.png]]
+** Maximum Entropy
+Reformulate the problem as constrained, non linear optimization
+$S = -\Sigma I \log{\frac{I}{P}}$
+** Solve in Julia
+#+begin_src julia
+function regularize(model, prior, total_flux)
+    entropy_loss = βent * entropy(model,prior)
+    flux_loss = βflux * flux(model,total_flux)
+    total_variance_loss = βtv * total_variance(model)
+    return entropy_loss + flux_loss + total_variance_loss
+end
+
+Zygote.gradient(x -> regularize(x, prior, total_flux), model)
+#+end_src
+** SgrA*
+[[file:./sgra.png]]
+** M87*
+[[file:./m87.png]]
