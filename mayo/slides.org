@@ -1,0 +1,129 @@
+#+TITLE: El-Secretario
+#+OPTIONS: toc:nil reveal_width:1200 reveal_height:1080 num:nil
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+#+REVEAL_THEME: black
+#+REVEAL_TRANS: slide
+
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [a4paper]
+#+LATEX_HEADER: \usepackage[top=1cm,left=3cm,right=3cm]{geometry}
+
+* ​
+:PROPERTIES:
+:ID:       da8c85c0-7984-4e90-87d5-1a91e214792a
+:EL-SECRETARIO-REVIEW-TASK-HOOK: (org-cycle-hide-drawers 'all)
+:END:
+
+
+
+**      el-secretario
+
+
+https://sr.ht/~zetagon/el-secretario/
+* ​
+:PROPERTIES:
+:ID:       a2607246-6366-4327-9133-b87251a9039f
+:EL-SECRETARIO-REVIEW-TASK-HOOK: (org-cycle-hide-drawers 'all)
+:END:
+
+
+
+** Two paradigms for accessing email
+* Array
+:PROPERTIES:
+:ID:       b63587e8-6081-4e09-9408-7c885151ebba
+:EL-SECRETARIO-REVIEW-TASK-HOOK: (org-cycle-hide-drawers 'all)
+:END:
+[[file:array.png][file:./array.png]]
+* Linked List
+:PROPERTIES:
+:ID:       5e696318-3a9d-4e21-aa01-a970532d981f
+:EL-SECRETARIO-REVIEW-TASK-HOOK: (org-cycle-hide-drawers 'all)
+:END:
+[[file:linked-list.png][file:./linked-list.png]]
+* Advantages of linked lists
+:PROPERTIES:
+:ID:       6df5c558-8d8d-4c8e-9d64-cd338115ecee
+:END:
+- Forced to go through all the items
+* Not just Email
+:PROPERTIES:
+:ID:       9bc0dfc6-a6b7-4ff8-8f82-e9e02fd2bc69
+:END:
+
+
+*** Other things can be linked lists too
+
+- GTD inbox
+- RSS feeds
+- etc.
+* Arrays
+:PROPERTIES:
+:ID:       3a796e3d-25e1-4f44-a12d-e7456212a96a
+:END:
+
+
+
+** Arrays are hard to concatenate
+
+- Hard normally
+
+- But even harder in Emacs
+* Linked Lists
+:PROPERTIES:
+:ID:       1223d069-c778-40e6-b944-e56188d57c9a
+:END:
+
+
+
+** Concatenating lists is easy
+
+
+
+* Value Proposition
+:PROPERTIES:
+:ID:       45511e43-4afd-4e0f-a1a2-5f09704140fd
+:END:
+
+
+
+*** Treat Things as lists
+
+*** Concatenate
+
+*** Browse
+* Current support
+:PROPERTIES:
+:ID:       ab8193ee-0175-4fb7-8792-b9d3d7e17857
+:END:
+
+
+- notmuch
+- mu4e
+- org-ql
+- elfeed
+- list of files
+- functions
+
+* Current support
+:PROPERTIES:
+:ID:       6ae3ef40-9e31-4ecd-9286-5fa5d86654d6
+:END:
+
+
+- notmuch
+- mu4e
+- org-ql
+- elfeed
+- list of files
+- functions
+- *presentations?*
+* ​
+:PROPERTIES:
+:ID:       61683945-4d69-4eb2-8660-cd8220d299fd
+:END:
+
+
+
+
+** Thank you
