@@ -21,3 +21,21 @@ function dateString(startTimestamp, endTimestamp) {
   let timeElem = document.querySelector("#time")
   timeElem.innerHTML = `[[${start} to ${end}]]`
 }
+
+function renderTime() {
+  let timesToRender = document.getElementsByClassName("singleTime");
+
+  for (const elem of timesToRender) {
+    let time = elem.innerHTML + 'Z';
+
+    elem.innerHTML = new Date(time).toLocaleString(
+      'en-gb',
+      {
+        hour: 'numeric',
+        minute: 'numeric'
+      }
+    );
+  }
+};
+
+renderTime();
