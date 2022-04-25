@@ -23,7 +23,7 @@ function dateString(startTimestamp, endTimestamp) {
 }
 
 function renderTime() {
-  let timesToRender = document.getElementsByClassName("singleTime");
+  let timesToRender = document.querySelectorAll(".singleTime");
 
   for (const elem of timesToRender) {
     let time = elem.innerHTML + 'Z';
