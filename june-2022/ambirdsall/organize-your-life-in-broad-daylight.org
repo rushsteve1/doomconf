@@ -1,0 +1,108 @@
+#+title: Organize Your Life In Broad Daylight
+#+startup: inlineimages
+#+options: toc:nil
+
+#+OPTIONS: toc:nil reveal_width:1200 reveal_height:1080 num:nil
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+#+REVEAL_THEME: black
+#+REVEAL_TRANS: slide
+
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [a4paper]
+#+LATEX_HEADER: \usepackage[top=1cm,left=3cm,right=3cm]{geometry}
+
+* An E-Ink Org Agenda/GCal View
+And a pile of atrocious hacks
+* The Screen
+[[./screen.png]]
+** They have a github repo
+#+begin_src shell
+pi@agenda-display:~ $ ls -1 e-paper/RaspberryPi_JetsonNano/python/examples/ | wc -l
+38
+pi@agenda-display:~ $ ls -1 e-paper/RaspberryPi_JetsonNano/python/examples/ | head
+epd_1in02_test.py
+epd_1in54b_test.py
+epd_1in54b_V2_test.py
+epd_1in54c_test.py
+epd_1in54_test.py
+epd_1in54_V2_test.py
+epd_2in13bc_test.py
+epd_2in13b_V3_test.py
+epd_2in13d_test.py
+epd_2in13_test.py
+#+end_src
+** and I have a raspberry pi zero w
+[[file:raspberry-pi.png]]
+* the agenda
+How I learned to stop worrying and love the systemd timer
+** get google calendar entries and dump them to an org file
+#+begin_src shell
+# customize these
+WGET=/usr/bin/wget
+ICS2ORG=/home/pi/e-paper/agenda/ical2org.awk
+ICSFILE=/home/pi/e-paper/agenda/gcal.ics
+ORGFILE=/home/pi/e-paper/agenda/gcal.org
+URL="https://calendar.google.com/calendar/ical/NOPE.calendar.google.com/private-AHEM/basic.ics"
+
+# no customization needed below
+
+$WGET -O $ICSFILE $URL
+$ICS2ORG < $ICSFILE > $ORGFILE
+#+end_src
+** generate agenda view and dump it to a text file
+*** generate-agenda.sh
+#+begin_src shell
+emacs -Q --script /home/pi/e-paper/agenda/generate-agenda.el \
+    | grep -v ':00\.\.\.\.'                                  \
+    | sed 's/now[ -]*/"now"/'                                \
+    | sed 's/gcal:/     /'                                   \
+    | sed -E 's/              ([[:alnum:]])/  \1/'           \
+    | sed -E 's/           */  /'                            \
+    | uniq                                                   \
+    > /home/pi/e-paper/agenda/agenda.txt
+#+end_src
+*** generate-agenda.el
+#+begin_src elisp
+(let ((org-agenda-files (list
+                        "/home/pi/e-paper/agenda/README.org"
+                        "/home/pi/e-paper/agenda/gcal.org"))
+      (org-agenda-start-on-weekday nil)
+      (org-agenda-compact-blocks 1)
+      (org-agenda-span 7))
+  (org-agenda-list))
+
+(princ (buffer-string))
+#+end_src
+* rendering
+
+** create two bitmap files
+- The bits in one represent black/white pixels
+- The bits in the other are red/white pixels
+- I created wrapper functions around PIL. Or Pillow? Whichever one is maintained.
+
+** always power down the screen after writing to it
+😭🙏💀
+[[file:rip.png]]
+
+** roll your own line-breaking algorithm
+1) check width of text line in the correct font
+2) wider than screen? Find the breaking point
+   a) drop last word and preceding whitespace, recheck line width
+   b) keep going until it fits
+3) print everything before the breaking point on one line
+4) print everything after on the next
+5) pretend nothing with a really long title ever happens
+
+** distinguish dates from events with some butt-ass ugly regeges
+Look, the plural of "rex" is "reges", you tell me what the plural of "regex" should be, wise guy
+* what's next?
+** display the weather data
+I already fetch it from open weather API, shit, I even got memoized icon downloading
+** get ~dropboxd~ running on the raspberry pi to sync my org files
+** display the relative positions of earth and sun
+I found some guy's C++ code on the internet, "just"™ need to port the calculations
+** clean up my code
+- do more formatting within emacs, before dumping the agenda to a text file
+- I pass too many wrapper functions as positional args, I should just make a class
+- +rewrite in scheme for fun+ j/k I'm not made of free time
+* Thanks
