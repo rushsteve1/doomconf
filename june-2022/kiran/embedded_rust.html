@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Embedded Rust</title>
+<meta name="author" content="Kiran Shila"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/black.css" id="theme"/>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1 class="title">Embedded Rust</h1><h2 class="author">Kiran Shila</h2><p class="date">Created: 2022-08-06 Sat 16:39</p>
+</section>
+
+
+<section>
+<section id="slide-orga655566">
+<h2 id="orga655566">Hello</h2>
+<p>
+Kiran Shila (@activeXray)
+</p>
+<ul>
+<li>PhD Student in EE @ Caltech</li>
+<li>Radio Astronomy</li>
+<li>Programming language enthusiast</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb292f5a">
+<h2 id="orgb292f5a">Who are you?</h2>
+<ul>
+<li>Interested in Rust and Embedded Systems
+<ul>
+<li>You don&rsquo;t need to know either</li>
+
+</ul></li>
+<li>Has a working understanding of computer architecture
+<ul>
+<li>Too much to cover in 20 min</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org3e9d29b">
+<h2 id="org3e9d29b">Embedded Systems and Bare-metal Programming</h2>
+<div class="outline-text-2" id="text-org3e9d29b">
+</div>
+</section>
+<section id="slide-orgd93cdf4">
+<h3 id="orgd93cdf4">What is an Embedded System</h3>
+<p>
+&ldquo;Embedded System&rdquo; can mean a lot
+</p>
+<ul>
+<li>A computer hardware system designed to perform a dedicated function</li>
+<li>Could be ASICs/FPGAs/&ldquo;Embedded Linux&rdquo;/Microcontrollers</li>
+<li>Some computation engine tied to sensors and IO</li>
+
+</ul>
+
+<p>
+We&rsquo;re typically talking about microcontrollers (the other MCU)
+</p>
+
+<ul>
+<li>Versus microprocessors (Modern CPU)</li>
+<li>Wraps together memory, ALU, I/O, etc. into one device</li>
+<li>Typically Harvard architecture
+<ul>
+<li>Separate data and instruction bus/memory</li>
+<li>Used to achieve one execution per clock cycle</li>
+<li>Some are still von-Neumann</li>
+
+</ul></li>
+
+</ul>
+
+<p>
+Program data is called &ldquo;firmware&rdquo;
+</p>
+
+</section>
+<section id="slide-orgb4d52ea">
+<h3 id="orgb4d52ea">&ldquo;Bare Metal&rdquo;</h3>
+<p>
+In contrast to Hosted Environments
+</p>
+
+<ul>
+<li>No system interface (POSIX)</li>
+<li>No sysroot</li>
+<li>No restrictions on memory access</li>
+
+</ul>
+
+<p>
+Typical for writing OSes, Bootloaders, BIOS code, Embedded Systems
+</p>
+
+<p>
+You get zero layers of abstraction
+</p>
+
+</section>
+<section id="slide-org26f93f8">
+<h3 id="org26f93f8">C as Bare Metal Lingua Franca</h3>
+<p>
+What is not &ldquo;bare metal&rdquo; here?
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-c"><span style="color: #87ceeb; font-weight: bold;">#include</span> <span style="color: #fab795;">&lt;stdio.h&gt;</span>
+<span style="color: #b877db;">int</span> <span style="color: #87ceeb;">main</span><span style="color: #21bfc2; background-color: #232530;">()</span> <span style="color: #21bfc2; background-color: #232530;">{</span>
+    <span style="color: #21bfc2;">printf</span><span style="color: #6c6f93; background-color: #232530;">(</span><span style="color: #fab795;">"Hello, World!"</span><span style="color: #6c6f93; background-color: #232530;">)</span><span style="color: #c7c9cb; background-color: #232530;">;</span>
+    <span style="color: #b877db; font-style: italic;">return</span> <span style="color: #f09383;">0</span><span style="color: #c7c9cb; background-color: #232530;">;</span>
+<span style="color: #21bfc2; background-color: #232530;">}</span>
+</pre>
+</div>
+
+</section>
+<section id="slide-org070b5ad">
+<h3 id="org070b5ad">C as Bare Metal Lingua Franca</h3>
+<ul>
+<li><code>stdio.h</code> is part of hosted stdlib (What does IO mean?)</li>
+<li><code>main</code> creates an entry point (assuming a program that executes this one knows)</li>
+<li><code>printf</code> prints??</li>
+<li><code>return 0</code> returns??</li>
+
+</ul>
+
+</section>
+<section id="slide-org3b73c01">
+<h3 id="org3b73c01">C as Bare Metal Lingua Franca</h3>
+<p>
+64-bit Linux &ldquo;Bare Metal&rdquo; Example (if we assume syscalls are the &ldquo;hardware&rdquo;)
+</p>
+
+<ul>
+<li>Default entry point for the gnu linker is <code>_start</code></li>
+
+</ul>
+
+<div class="org-src-container">
+
+<pre class="src src-c"><span style="color: #87ceeb; font-weight: bold;">#define</span> <span style="color: #27d797;">SYSCALL_EXIT</span> <span style="color: #f09383; font-weight: bold;">60</span>
+<span style="color: #87ceeb; font-weight: bold;">#define</span> <span style="color: #27d797;">SYSCALL_WRITE</span> <span style="color: #f09383; font-weight: bold;">1</span>
+
+<span style="color: #b877db;">void</span> <span style="color: #87ceeb;">sys_exit</span><span style="color: #21bfc2; background-color: #232530;">(</span><span style="color: #b877db;">int</span> <span style="color: #e95678;">error_code</span><span style="color: #21bfc2; background-color: #232530;">)</span> <span style="color: #21bfc2; background-color: #232530;">{</span>
+  <span style="color: #87ceeb;">asm</span> <span style="color: #b877db; font-style: italic;">volatile</span><span style="color: #6c6f93; background-color: #232530;">(</span><span style="color: #fab795;">"syscall"</span>
+               :
+               : <span style="color: #fab795;">"a"</span><span style="color: #09f7a0; background-color: #232530;">(</span><span style="color: #f09383;">SYSCALL_EXIT</span><span style="color: #09f7a0; background-color: #232530;">)</span><span style="color: #c7c9cb; background-color: #232530;">,</span> <span style="color: #fab795;">"D"</span><span style="color: #09f7a0; background-color: #232530;">(</span>error_code<span style="color: #09f7a0; background-color: #232530;">)</span>
+               : <span style="color: #fab795;">"rcx"</span><span style="color: #c7c9cb; background-color: #232530;">,</span> <span style="color: #fab795;">"r11"</span><span style="color: #c7c9cb; background-color: #232530;">,</span> <span style="color: #fab795;">"memory"</span><span style="color: #6c6f93; background-color: #232530;">)</span><span style="color: #c7c9cb; background-color: #232530;">;</span>
+<span style="color: #21bfc2; background-color: #232530;">}</span>
+
+<span style="color: #b877db;">int</span> <span style="color: #87ceeb;">sys_write</span><span style="color: #21bfc2; background-color: #232530;">(</span><span style="color: #b877db;">unsigned</span> <span style="color: #e95678;">fd</span><span style="color: #c7c9cb; background-color: #232530;">,</span> <span style="color: #b877db; font-style: italic;">const</span> <span style="color: #b877db;">char</span> <span style="color: #b877db; font-style: italic;">*</span><span style="color: #e95678;">buf</span><span style="color: #c7c9cb; background-color: #232530;">,</span> <span style="color: #b877db;">unsigned</span> <span style="color: #e95678;">count</span><span style="color: #21bfc2; background-color: #232530;">)</span> <span style="color: #21bfc2; background-color: #232530;">{</span>
+  <span style="color: #b877db;">unsigned</span> <span style="color: #e95678;">ret</span><span style="color: #c7c9cb; background-color: #232530;">;</span>
+
+  <span style="color: #87ceeb;">asm</span> <span style="color: #b877db; font-style: italic;">volatile</span><span style="color: #6c6f93; background-color: #232530;">(</span><span style="color: #fab795;">"syscall"</span>
+               : <span style="color: #fab795;">"=a"</span><span style="color: #09f7a0; background-color: #232530;">(</span>ret<span style="color: #09f7a0; background-color: #232530;">)</span>
+               : <span style="color: #fab795;">"a"</span><span style="color: #09f7a0; background-color: #232530;">(</span><span style="color: #f09383;">SYSCALL_WRITE</span><span style="color: #09f7a0; background-color: #232530;">)</span><span style="color: #c7c9cb; background-color: #232530;">,</span> <span style="color: #fab795;">"D"</span><span style="color: #09f7a0; background-color: #232530;">(</span>fd<span style="color: #09f7a0; background-color: #232530;">)</span><span style="color: #c7c9cb; background-color: #232530;">,</span> <span style="color: #fab795;">"S"</span><span style="color: #09f7a0; background-color: #232530;">(</span>buf<span style="color: #09f7a0; background-color: #232530;">)</span><span style="color: #c7c9cb; background-color: #232530;">,</span> <span style="color: #fab795;">"d"</span><span style="color: #09f7a0; background-color: #232530;">(</span>count<span style="color: #09f7a0; background-color: #232530;">)</span>
+               : <span style="color: #fab795;">"rcx"</span><span style="color: #c7c9cb; background-color: #232530;">,</span> <span style="color: #fab795;">"r11"</span><span style="color: #c7c9cb; background-color: #232530;">,</span> <span style="color: #fab795;">"memory"</span><span style="color: #6c6f93; background-color: #232530;">)</span><span style="color: #c7c9cb; background-color: #232530;">;</span>
+
+  <span style="color: #b877db; font-style: italic;">return</span> ret<span style="color: #c7c9cb; background-color: #232530;">;</span>
+<span style="color: #21bfc2; background-color: #232530;">}</span>
+
+<span style="color: #b877db;">void</span> <span style="color: #87ceeb;">_start</span><span style="color: #21bfc2; background-color: #232530;">(</span><span style="color: #b877db;">void</span><span style="color: #21bfc2; background-color: #232530;">)</span> <span style="color: #21bfc2; background-color: #232530;">{</span>
+  <span style="color: #b877db; font-style: italic;">const</span> <span style="color: #b877db;">char</span> <span style="color: #e95678;">hwText</span><span style="color: #6c6f93; background-color: #232530;">[]</span> <span style="color: #b877db; font-style: italic;">=</span> <span style="color: #fab795;">"Hello world!\n"</span><span style="color: #c7c9cb; background-color: #232530;">;</span>
+  <span style="color: #21bfc2;">sys_write</span><span style="color: #6c6f93; background-color: #232530;">(</span><span style="color: #f09383;">1</span><span style="color: #c7c9cb; background-color: #232530;">,</span> hwText<span style="color: #c7c9cb; background-color: #232530;">,</span> <span style="color: #b877db; font-style: italic;">sizeof</span><span style="color: #09f7a0; background-color: #232530;">(</span>hwText<span style="color: #09f7a0; background-color: #232530;">)</span><span style="color: #6c6f93; background-color: #232530;">)</span><span style="color: #c7c9cb; background-color: #232530;">;</span>
+  <span style="color: #21bfc2;">sys_exit</span><span style="color: #6c6f93; background-color: #232530;">(</span><span style="color: #f09383;">12</span><span style="color: #6c6f93; background-color: #232530;">)</span><span style="color: #c7c9cb; background-color: #232530;">;</span>
+<span style="color: #21bfc2; background-color: #232530;">}</span>
+</pre>
+</div>
+
+</section>
+<section id="slide-org7799888">
+<h3 id="org7799888">C as Bare Metal Linuga Franca</h3>
+<ul>
+<li>C was meant for this!
+<ul>
+<li>A light wrapper around PDP-11 Assembly</li>
+
+</ul></li>
+<li>Decades of tooling</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org20703af">
+<h2 id="org20703af">Why Rust?</h2>
+<ul>
+<li>C makes it easy to make (memory) mistakes</li>
+<li>C++ isn&rsquo;t really a thing in embedded
+<ul>
+<li>Some architectures don&rsquo;t even have a C++ compiler</li>
+<li>The standard library doesn&rsquo;t <b>really</b> work on bare metal</li>
+<li>People still use it though (Arduino)</li>
+
+</ul></li>
+<li>C is 50 years old!
+<ul>
+<li>That&rsquo;s 50 years of improvement in PL design</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbbfbdfd">
+<h2 id="orgbbfbdfd">Why Rust?</h2>
+<ul>
+<li>Rust is a systems language which is designed for memory safety
+<ul>
+<li>All references will point to valid memory (without a GC or Reference
+Counting)</li>
+
+</ul></li>
+<li>Designed by Graydon Hoare at Mozilla in 2010</li>
+<li>By all accounts, a modern language
+<ul>
+<li>Package manager and build tool (Cargo)</li>
+<li>Excellent LSP (rust-analyzer)</li>
+<li>Full Hindley-Milner type inference</li>
+
+</ul></li>
+<li>We&rsquo;ll probably see Rust in the Linux kernel</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb2aaf2f">
+<h2 id="orgb2aaf2f">Why Not Rust?</h2>
+<ul>
+<li>Support for bare-metal is quite new</li>
+<li>Embedded community is not huge</li>
+<li>Embedded tooling isn&rsquo;t quite there</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org89f9734">
+<h2 id="org89f9734">Quick Rust Primer</h2>
+<p>
+If you want to learn rust, just read <code>the book</code>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-rust">fn add2(x: i32, y: i32) -&gt; i32 {
+    x + y // Implicit return
+}
+
+fn main() {
+    let x = 1; // Inferred type
+    let y: i32 = 13i32; // Explicit type, integer/float suffixes
+    let z = add2(x, y);
+
+    // Mutable variable
+    let mut mutable = 1;
+    mutable = 4;
+    mutable += 2;
+
+    // Structs are structs (Product Types)
+    struct Point {
+        x: i32,
+        y: i32,
+    }
+
+    // Import symbols into the current scope with `use`
+    use std::num;
+
+    // Methods are added to structs with `impl`
+    impl Point {
+        /// Returns a point's distance from the origin
+        fn distance(&amp;self) -&gt; f32 {
+            // Things are scoped with `::`
+            num::sqrt(i32::pow(2,self.x) + i32::pow(2,self.y))
+        }
+    }
+
+    // Enums are Sum Types
+    // Generics are generics
+    enum Maybe&lt;T&gt; {
+        Just(T),
+        None,
+    }
+
+    // You can "bound" generics with traits
+    // Traits are typeclasses are interfaces
+    impl&lt;T&gt; Maybe&lt;T&gt;
+    where
+        T: std::fmt::Debug,
+    {
+        fn debug_me(&amp;self) {
+            // Implicit unit `()` return
+            match self {
+                // Powerful pattern matching
+                Maybe(inner) =&gt; println!("I've got some: {:?}", inner), // Desstructure anywhere
+                None =&gt; println!("No dice!"),
+            }
+        }
+    }
+}
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgf2d8087">
+<h2 id="orgf2d8087">Embedded Rust</h2>
+<div class="outline-text-2" id="text-orgf2d8087">
+</div>
+</section>
+<section id="slide-orgf80563c">
+<h3 id="orgf80563c">Platform Support</h3>
+<ul>
+<li>Rust uses LLVM
+<ul>
+<li>Tier 2 support for ARM Cortex M (STM32, ATSAMD, Some Arduinos, RP2040,
+Nordic BLE devices) and (some) RISCV</li>
+<li>Tier 3 support for AVRs (OG Arduinos)</li>
+<li>Community fork for Xtena (ESP32)</li>
+
+</ul></li>
+
+</ul>
+
+<p>
+We&rsquo;re going to focus on ARM
+</p>
+
+</section>
+<section id="slide-org924069b">
+<h3 id="org924069b">Level 0 - <code>cortex_m</code></h3>
+<p>
+The <code>cortex_m</code> crate (a compilation unit (library)), provides low level wrappers
+around the core Cortex M ISA.
+</p>
+
+<p>
+You shouldn&rsquo;t really ever need to mess with this (except for things like <code>cortex_m::asm::nop</code>)
+</p>
+
+<ul>
+<li>Read the initial stack pointer and reset vector from the vector table address</li>
+<li>Set the active stack to the main stack</li>
+<li>Set the main stack pointer to the new initial pointer</li>
+<li>Jump to reset</li>
+
+</ul>
+<div class="org-src-container">
+
+<pre class="src src-rust">// Explicit unsafe as the compiler will never be able to verify anything about the VT
+unsafe {
+    bootload(vector_table_addr)
+}
+</pre>
+</div>
+
+</section>
+<section id="slide-org99a3d18">
+<h3 id="org99a3d18">Level 1 - Peripheral Access Crates (PAC)</h3>
+<p>
+Peripherals in embedded systems are memory-mapped.
+</p>
+
+<p>
+Take, for example, turning on an LED.
+</p>
+
+<p>
+We would probably have to
+</p>
+
+<ul>
+<li>Start up clocks</li>
+<li>Setup some control register</li>
+<li>Then write the LED bit to a &ldquo;port&rsquo;s&rdquo; output</li>
+
+</ul>
+
+<p>
+This is a cycle of
+</p>
+<ul>
+<li>Read datasheet for magic values in magic registers</li>
+<li>Write to those registers</li>
+
+</ul>
+<div class="org-src-container">
+
+<pre class="src src-rust">const GPIOC_START: usize = 0x40001_1000;
+const CRH_OFFSET: usize = 0x04;
+const OUTPUT_MODE: u32 = 0b01;
+const PUSH_PULL: u32 = 0b10;
+unsafe {
+    *((GPIOC_START + CRH_OFFSET) as *mut u32) =
+        (OUTPUT_MODE &lt;&lt; 20) | (PUSH_PULL &lt;&lt; 22);
+}
+</pre>
+</div>
+
+</section>
+<section id="slide-orga28ac40">
+<h3 id="orga28ac40">Level 1 - Peripheral Access Crates (PAC)</h3>
+<p>
+Instead of what we just wrote - we can use SVDs (System View Description)!
+</p>
+
+<ul>
+<li>A standardized way of describing peripherals, registers, fields, vendor
+extensions, etc.</li>
+<li>Published by the manufacturer</li>
+<li><code>svd2rust</code> can generate (structs) automatically</li>
+
+</ul>
+
+<p>
+This provides a <b>mostly</b> safe interface, zero cost abstractions, and prevents
+re-use of peripherals (due to the borrowing system)
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-rust">dp.GPIOC.crh.modify(|_r, w| {
+    w.mode13().output().cnf13().push_pull(),
+});
+</pre>
+</div>
+
+<p>
+Abstracted away most of the unsafe behavior, but we&rsquo;re still reliant on the data
+sheet. Did we initialize things correctly?
+</p>
+
+<p>
+These crates exist per chip family
+</p>
+</section>
+<section id="slide-org78da984">
+<h3 id="org78da984">Level 2 - Hardware Abstraction Layer (HAL)</h3>
+<ul>
+<li>We want a high level interface around the PAC (like Arduino)</li>
+<li>We want to encode correctness in the type system (like initialization)</li>
+
+</ul>
+
+<p>
+These crates exist per chip
+</p>
+</section>
+<section id="slide-org2884a05">
+<h3 id="org2884a05">Level 3 - Board Support Crate (BSP)</h3>
+<p>
+Lastly, we may want to abstract a physical board with
+</p>
+<ul>
+<li>IO</li>
+<li>LEDs</li>
+<li>Sensors</li>
+<li>Etc</li>
+
+</ul>
+
+<p>
+The BSP doesn&rsquo;t add a whole lot, but simplifies getting started
+</p>
+
+</section>
+<section id="slide-orgef736d1">
+<h3 id="orgef736d1">Traits and Embedded HAL</h3>
+<ul>
+<li>Traits are interfaces in Rust</li>
+<li><p>
+Instead of every MCU behaving slightly different, the <code>embedded_hal</code> crate
+provides interfaces for all common peripherals
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-rust">pub trait OutputPin {
+    type Error;
+
+    fn set_low(&amp;mut self) -&gt; Result&lt;(), Self::Error&gt;;
+
+    fn set_high(&amp;mut self) -&gt; Result&lt;(), Self::Error&gt;;
+
+    fn set_state(&amp;mut self, state: PinState) -&gt; Result&lt;(), Self::Error&gt; {
+        match state {
+            PinState::Low =&gt; self.set_low(),
+            PinState::High =&gt; self.set_high(),
+        }
+    }
+}
+</pre>
+</div></li>
+
+</ul>
+
+</section>
+<section id="slide-orge083e33">
+<h3 id="orge083e33">Traits and Embedded HAL</h3>
+<p>
+This interface implies driver crates can be written to be device-agnostic!
+</p>
+
+<p>
+Large ecosystem of driver crates
+</p>
+<ul>
+<li>Temperature/humidity sensors</li>
+<li>Screens, E-Ink, Etc.</li>
+<li>Power sensors, motor drivers,</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org15b4648">
+<h2 id="org15b4648">My Experience</h2>
+<p>
+I&rsquo;m working on a project GReX (Galactic Radio Explorer)
+</p>
+
+</section>
+<section id="slide-orgc0a5e1c">
+<h3 id="orgc0a5e1c">FEM</h3>
+<p>
+Downconverting radio
+</p>
+<ul>
+<li>Temperature sensors</li>
+<li>Power sensors</li>
+<li>Attenuator control</li>
+<li>Interrupt-driven IO</li>
+
+</ul>
+
+<p>
+~800 Lines of Rust
+</p>
+
+<p>
+Two new driver crates
+</p>
+<ul>
+<li>STUw81300</li>
+<li>PAC194X</li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/search/search.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom/zoom.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+overview: true,
+width: 1200,
+height: 1080,
+
+transition: 'slide',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>

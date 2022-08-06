@@ -1,0 +1,353 @@
+#+title: Embedded Rust
+#+subtitle: DoomConf
+#+author: Kiran Shila
+
+#+OPTIONS: toc:nil reveal_width:1200 reveal_height:1080 num:nil
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+#+REVEAL_THEME: black
+#+REVEAL_TRANS: slide
+
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [a4paper]
+#+LATEX_HEADER: \usepackage[top=1cm,left=3cm,right=3cm]{geometry}
+
+
+* Hello
+
+Kiran Shila (@activeXray)
+- PhD Student in EE @ Caltech
+- Radio Astronomy
+- Programming language enthusiast
+
+* Who are you?
+
+- Interested in Rust and Embedded Systems
+  + You don't need to know either
+- Has a working understanding of computer architecture
+  + Too much to cover in 20 min
+
+* Embedded Systems and Bare-metal Programming
+
+** What is an Embedded System
+
+"Embedded System" can mean a lot
+- A computer hardware system designed to perform a dedicated function
+- Could be ASICs/FPGAs/"Embedded Linux"/Microcontrollers
+- Some computation engine tied to sensors and IO
+
+We're typically talking about microcontrollers (the other MCU)
+
+- Versus microprocessors (Modern CPU)
+- Wraps together memory, ALU, I/O, etc. into one device
+- Typically Harvard architecture
+  + Separate data and instruction bus/memory
+  + Used to achieve one execution per clock cycle
+  + Some are still von-Neumann
+
+Program data is called "firmware"
+
+** "Bare Metal"
+
+In contrast to Hosted Environments
+
+- No system interface (POSIX)
+- No sysroot
+- No restrictions on memory access
+
+Typical for writing OSes, Bootloaders, BIOS code, Embedded Systems
+
+You get zero layers of abstraction
+
+** C as Bare Metal Lingua Franca
+
+What is not "bare metal" here?
+
+#+begin_src c
+#include <stdio.h>
+int main() {
+    printf("Hello, World!");
+    return 0;
+}
+#+end_src
+
+** C as Bare Metal Lingua Franca
+
+- =stdio.h= is part of hosted stdlib (What does IO mean?)
+- =main= creates an entry point (assuming a program that executes this one knows)
+- =printf= prints??
+- =return 0= returns??
+
+** C as Bare Metal Lingua Franca
+
+64-bit Linux "Bare Metal" Example (if we assume syscalls are the "hardware")
+
+- Default entry point for the gnu linker is =_start=
+
+#+begin_src c
+#define SYSCALL_EXIT 60
+#define SYSCALL_WRITE 1
+
+void sys_exit(int error_code) {
+  asm volatile("syscall"
+               :
+               : "a"(SYSCALL_EXIT), "D"(error_code)
+               : "rcx", "r11", "memory");
+}
+
+int sys_write(unsigned fd, const char *buf, unsigned count) {
+  unsigned ret;
+
+  asm volatile("syscall"
+               : "=a"(ret)
+               : "a"(SYSCALL_WRITE), "D"(fd), "S"(buf), "d"(count)
+               : "rcx", "r11", "memory");
+
+  return ret;
+}
+
+void _start(void) {
+  const char hwText[] = "Hello world!\n";
+  sys_write(1, hwText, sizeof(hwText));
+  sys_exit(12);
+}
+#+end_src
+
+** C as Bare Metal Linuga Franca
+
+- C was meant for this!
+  + A light wrapper around PDP-11 Assembly
+- Decades of tooling
+
+* Why Rust?
+
+- C makes it easy to make (memory) mistakes
+- C++ isn't really a thing in embedded
+  + Some architectures don't even have a C++ compiler
+  + The standard library doesn't *really* work on bare metal
+  + People still use it though (Arduino)
+- C is 50 years old!
+  + That's 50 years of improvement in PL design
+
+* Why Rust?
+
+- Rust is a systems language which is designed for memory safety
+  + All references will point to valid memory (without a GC or Reference
+    Counting)
+- Designed by Graydon Hoare at Mozilla in 2010
+- By all accounts, a modern language
+  + Package manager and build tool (Cargo)
+  + Excellent LSP (rust-analyzer)
+  + Full Hindley-Milner type inference
+- We'll probably see Rust in the Linux kernel
+
+* Why Not Rust?
+
+- Support for bare-metal is quite new
+- Embedded community is not huge
+- Embedded tooling isn't quite there
+
+* Quick Rust Primer
+
+If you want to learn rust, just read =the book=
+
+#+begin_src rust
+fn add2(x: i32, y: i32) -> i32 {
+    x + y // Implicit return
+}
+
+fn main() {
+    let x = 1; // Inferred type
+    let y: i32 = 13i32; // Explicit type, integer/float suffixes
+    let z = add2(x, y);
+
+    // Mutable variable
+    let mut mutable = 1;
+    mutable = 4;
+    mutable += 2;
+
+    // Structs are structs (Product Types)
+    struct Point {
+        x: i32,
+        y: i32,
+    }
+
+    // Import symbols into the current scope with `use`
+    use std::num;
+
+    // Methods are added to structs with `impl`
+    impl Point {
+        /// Returns a point's distance from the origin
+        fn distance(&self) -> f32 {
+            // Things are scoped with `::`
+            num::sqrt(i32::pow(2,self.x) + i32::pow(2,self.y))
+        }
+    }
+
+    // Enums are Sum Types
+    // Generics are generics
+    enum Maybe<T> {
+        Just(T),
+        None,
+    }
+
+    // You can "bound" generics with traits
+    // Traits are typeclasses are interfaces
+    impl<T> Maybe<T>
+    where
+        T: std::fmt::Debug,
+    {
+        fn debug_me(&self) {
+            // Implicit unit `()` return
+            match self {
+                // Powerful pattern matching
+                Maybe(inner) => println!("I've got some: {:?}", inner), // Desstructure anywhere
+                None => println!("No dice!"),
+            }
+        }
+    }
+}
+#+end_src
+
+* Embedded Rust
+
+** Platform Support
+
+- Rust uses LLVM
+  + Tier 2 support for ARM Cortex M (STM32, ATSAMD, Some Arduinos, RP2040,
+    Nordic BLE devices) and (some) RISCV
+  + Tier 3 support for AVRs (OG Arduinos)
+  + Community fork for Xtena (ESP32)
+
+We're going to focus on ARM
+
+** Level 0 - =cortex_m=
+
+The =cortex_m= crate (a compilation unit (library)), provides low level wrappers
+around the core Cortex M ISA.
+
+You shouldn't really ever need to mess with this (except for things like =cortex_m::asm::nop=)
+
+- Read the initial stack pointer and reset vector from the vector table address
+- Set the active stack to the main stack
+- Set the main stack pointer to the new initial pointer
+- Jump to reset
+#+begin_src rust
+// Explicit unsafe as the compiler will never be able to verify anything about the VT
+unsafe {
+    bootload(vector_table_addr)
+}
+#+end_src
+
+** Level 1 - Peripheral Access Crates (PAC)
+
+Peripherals in embedded systems are memory-mapped.
+
+Take, for example, turning on an LED.
+
+We would probably have to
+
+- Start up clocks
+- Setup some control register
+- Then write the LED bit to a "port's" output
+
+This is a cycle of
+- Read datasheet for magic values in magic registers
+- Write to those registers
+#+begin_src rust
+const GPIOC_START: usize = 0x40001_1000;
+const CRH_OFFSET: usize = 0x04;
+const OUTPUT_MODE: u32 = 0b01;
+const PUSH_PULL: u32 = 0b10;
+unsafe {
+    *((GPIOC_START + CRH_OFFSET) as *mut u32) =
+        (OUTPUT_MODE << 20) | (PUSH_PULL << 22);
+}
+#+end_src
+
+** Level 1 - Peripheral Access Crates (PAC)
+
+Instead of what we just wrote - we can use SVDs (System View Description)!
+
+- A standardized way of describing peripherals, registers, fields, vendor
+  extensions, etc.
+- Published by the manufacturer
+- =svd2rust= can generate (structs) automatically
+
+This provides a *mostly* safe interface, zero cost abstractions, and prevents
+re-use of peripherals (due to the borrowing system)
+
+#+begin_src rust
+dp.GPIOC.crh.modify(|_r, w| {
+    w.mode13().output().cnf13().push_pull(),
+});
+#+end_src
+
+Abstracted away most of the unsafe behavior, but we're still reliant on the data
+sheet. Did we initialize things correctly?
+
+These crates exist per chip family
+** Level 2 - Hardware Abstraction Layer (HAL)
+
+- We want a high level interface around the PAC (like Arduino)
+- We want to encode correctness in the type system (like initialization)
+
+These crates exist per chip
+** Level 3 - Board Support Crate (BSP)
+
+Lastly, we may want to abstract a physical board with
+- IO
+- LEDs
+- Sensors
+- Etc
+
+The BSP doesn't add a whole lot, but simplifies getting started
+
+** Traits and Embedded HAL
+
+- Traits are interfaces in Rust
+- Instead of every MCU behaving slightly different, the =embedded_hal= crate
+  provides interfaces for all common peripherals
+
+  #+begin_src rust
+pub trait OutputPin {
+    type Error;
+
+    fn set_low(&mut self) -> Result<(), Self::Error>;
+
+    fn set_high(&mut self) -> Result<(), Self::Error>;
+
+    fn set_state(&mut self, state: PinState) -> Result<(), Self::Error> {
+        match state {
+            PinState::Low => self.set_low(),
+            PinState::High => self.set_high(),
+        }
+    }
+}
+  #+end_src
+
+** Traits and Embedded HAL
+
+This interface implies driver crates can be written to be device-agnostic!
+
+Large ecosystem of driver crates
+- Temperature/humidity sensors
+- Screens, E-Ink, Etc.
+- Power sensors, motor drivers,
+
+* My Experience
+
+I'm working on a project GReX (Galactic Radio Explorer)
+
+** FEM
+
+Downconverting radio
+- Temperature sensors
+- Power sensors
+- Attenuator control
+- Interrupt-driven IO
+
+~800 Lines of Rust
+
+Two new driver crates
+- STUw81300
+- PAC194X

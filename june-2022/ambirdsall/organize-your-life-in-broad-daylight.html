@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Organize Your Life In Broad Daylight</title>
+<meta name="author" content="Jeetaditya Chatterjee"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="/home/jeet/.config/emacs/.local/straight/build-29.0.50/revealjs/dist/reveal.css"/>
+
+<link rel="stylesheet" href="/home/jeet/.config/emacs/.local/straight/build-29.0.50/revealjs/dist/theme/black.css" id="theme"/>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1 class="title">Organize Your Life In Broad Daylight</h1><h2 class="author">Jeetaditya Chatterjee</h2><p class="date">Created: 2022-08-06 Sat 16:39</p>
+</section>
+
+<section>
+<section id="slide-1">
+<h2 id="1"><span class="section-number-2">1.</span> An E-Ink Org Agenda/GCal View</h2>
+<p>
+And a pile of atrocious hacks
+</p>
+</section>
+</section>
+<section>
+<section id="slide-2">
+<h2 id="2"><span class="section-number-2">2.</span> The Screen</h2>
+
+<div id="orgb1f72b0" class="figure">
+<p><img src="./screen.png" alt="screen.png" />
+</p>
+</div>
+</section>
+<section id="slide-2-1">
+<h3 id="2-1"><span class="section-number-3">2.1.</span> They have a github repo</h3>
+<div class="org-src-container">
+
+<pre class="src src-shell">pi@agenda-display:~ $ <span style="color: #87ceeb;">ls</span> -1 e-paper/RaspberryPi_JetsonNano/python/examples/ | wc -l
+<span style="color: #f09383; font-weight: bold;">38</span>
+pi@agenda-display:~ $ <span style="color: #87ceeb;">ls</span> -1 e-paper/RaspberryPi_JetsonNano/python/examples/ | head
+epd_1in02_test.py
+epd_1in54b_test.py
+epd_1in54b_V2_test.py
+epd_1in54c_test.py
+epd_1in54_test.py
+epd_1in54_V2_test.py
+epd_2in13bc_test.py
+epd_2in13b_V3_test.py
+epd_2in13d_test.py
+epd_2in13_test.py
+</pre>
+</div>
+</section>
+<section id="slide-2-2">
+<h3 id="2-2"><span class="section-number-3">2.2.</span> and I have a raspberry pi zero w</h3>
+
+<div id="org8544b7f" class="figure">
+<p><img src="raspberry-pi.png" alt="raspberry-pi.png" />
+</p>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-3">
+<h2 id="3"><span class="section-number-2">3.</span> the agenda</h2>
+<p>
+How I learned to stop worrying and love the systemd timer
+</p>
+</section>
+<section id="slide-3-1">
+<h3 id="3-1"><span class="section-number-3">3.1.</span> get google calendar entries and dump them to an org file</h3>
+<div class="org-src-container">
+
+<pre class="src src-shell"><span style="color: #6c6f93; background-color: #292b36; font-style: italic;"># </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">customize these</span>
+<span style="color: #e95678;">WGET</span>=/usr/bin/wget
+<span style="color: #e95678;">ICS2ORG</span>=/home/pi/e-paper/agenda/ical2org.awk
+<span style="color: #e95678;">ICSFILE</span>=/home/pi/e-paper/agenda/gcal.ics
+<span style="color: #e95678;">ORGFILE</span>=/home/pi/e-paper/agenda/gcal.org
+<span style="color: #e95678;">URL</span>=<span style="color: #fab795;">"https://calendar.google.com/calendar/ical/NOPE.calendar.google.com/private-AHEM/basic.ics"</span>
+
+<span style="color: #6c6f93; background-color: #292b36; font-style: italic;"># </span><span style="color: #6c6f93; background-color: #292b36; font-style: italic;">no customization needed below</span>
+
+$<span style="color: #e95678;">WGET</span> -O $<span style="color: #e95678;">ICSFILE</span> $<span style="color: #e95678;">URL</span>
+$<span style="color: #e95678;">ICS2ORG</span> &lt; $<span style="color: #e95678;">ICSFILE</span> &gt; $<span style="color: #e95678;">ORGFILE</span>
+</pre>
+</div>
+</section>
+<section id="slide-3-2">
+<h3 id="3-2"><span class="section-number-3">3.2.</span> generate agenda view and dump it to a text file</h3>
+<div class="outline-text-3" id="text-3-2">
+</div>
+</section>
+<section id="slide-3-2-1">
+<h4 id="3-2-1"><span class="section-number-4">3.2.1.</span> generate-agenda.sh</h4>
+<div class="org-src-container">
+
+<pre class="src src-shell">emacs -Q --script /home/pi/e-paper/agenda/generate-agenda.el <span style="color: #fab795;">\</span>
+    | <span style="color: #87ceeb;">grep</span> -v <span style="color: #fab795;">':00\.\.\.\.'</span>                                  <span style="color: #fab795;">\</span>
+    | sed <span style="color: #fab795;">'s/now[ -]*/"now"/'</span>                                <span style="color: #fab795;">\</span>
+    | sed <span style="color: #fab795;">'s/gcal:/     /'</span>                                   <span style="color: #fab795;">\</span>
+    | sed -E <span style="color: #fab795;">'s/              ([[:alnum:]])/  \1/'</span>           <span style="color: #fab795;">\</span>
+    | sed -E <span style="color: #fab795;">'s/           */  /'</span>                            <span style="color: #fab795;">\</span>
+    | uniq                                                   <span style="color: #fab795;">\</span>
+    &gt; /home/pi/e-paper/agenda/agenda.txt
+</pre>
+</div>
+</section>
+<section id="slide-3-2-2">
+<h4 id="3-2-2"><span class="section-number-4">3.2.2.</span> generate-agenda.el</h4>
+<div class="org-src-container">
+
+<pre class="src src-elisp"><span style="color: #21bfc2;">(</span><span style="color: #b877db; font-style: italic;">let</span> <span style="color: #6c6f93;">(</span><span style="color: #09f7a0;">(</span><span style="color: #e95678;">org-agenda-files</span> <span style="color: #b877db;">(</span><span style="color: #f09383;">list</span>
+                        <span style="color: #fab795;">"/home/pi/e-paper/agenda/README.org"</span>
+                        <span style="color: #fab795;">"/home/pi/e-paper/agenda/gcal.org"</span><span style="color: #b877db;">)</span><span style="color: #09f7a0;">)</span>
+      <span style="color: #09f7a0;">(</span><span style="color: #e95678;">org-agenda-start-on-weekday</span> nil<span style="color: #09f7a0;">)</span>
+      <span style="color: #09f7a0;">(</span><span style="color: #e95678;">org-agenda-compact-blocks</span> <span style="color: #f09383; font-weight: bold;">1</span><span style="color: #09f7a0;">)</span>
+      <span style="color: #09f7a0;">(</span><span style="color: #e95678;">org-agenda-span</span> <span style="color: #f09383; font-weight: bold;">7</span><span style="color: #09f7a0;">)</span><span style="color: #6c6f93;">)</span>
+  <span style="color: #6c6f93;">(</span><span style="color: #f09383;">org-agenda-list</span><span style="color: #6c6f93;">)</span><span style="color: #21bfc2;">)</span>
+
+<span style="color: #21bfc2;">(</span><span style="color: #f09383;">princ</span> <span style="color: #6c6f93;">(</span><span style="color: #f09383;">buffer-string</span><span style="color: #6c6f93;">)</span><span style="color: #21bfc2;">)</span>
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-4">
+<h2 id="4"><span class="section-number-2">4.</span> rendering</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+</section>
+<section id="slide-4-1">
+<h3 id="4-1"><span class="section-number-3">4.1.</span> create two bitmap files</h3>
+<ul>
+<li>The bits in one represent black/white pixels</li>
+<li>The bits in the other are red/white pixels</li>
+<li>I created wrapper functions around PIL. Or Pillow? Whichever one is maintained.</li>
+
+</ul>
+
+</section>
+<section id="slide-4-2">
+<h3 id="4-2"><span class="section-number-3">4.2.</span> always power down the screen after writing to it</h3>
+<p>
+😭🙏💀
+<img src="rip.png" alt="rip.png" />
+</p>
+
+</section>
+<section id="slide-4-3">
+<h3 id="4-3"><span class="section-number-3">4.3.</span> roll your own line-breaking algorithm</h3>
+<ol>
+<li>check width of text line in the correct font</li>
+<li>wider than screen? Find the breaking point
+<ol>
+<li>drop last word and preceding whitespace, recheck line width</li>
+<li>keep going until it fits</li>
+
+</ol></li>
+<li>print everything before the breaking point on one line</li>
+<li>print everything after on the next</li>
+<li>pretend nothing with a really long title ever happens</li>
+
+</ol>
+
+</section>
+<section id="slide-4-4">
+<h3 id="4-4"><span class="section-number-3">4.4.</span> distinguish dates from events with some butt-ass ugly regeges</h3>
+<p>
+Look, the plural of &ldquo;rex&rdquo; is &ldquo;reges&rdquo;, you tell me what the plural of &ldquo;regex&rdquo; should be, wise guy
+</p>
+</section>
+</section>
+<section>
+<section id="slide-5">
+<h2 id="5"><span class="section-number-2">5.</span> what&rsquo;s next?</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+</section>
+<section id="slide-5-1">
+<h3 id="5-1"><span class="section-number-3">5.1.</span> display the weather data</h3>
+<p>
+I already fetch it from open weather API, shit, I even got memoized icon downloading
+</p>
+</section>
+<section id="slide-5-2">
+<h3 id="5-2"><span class="section-number-3">5.2.</span> get <code>dropboxd</code> running on the raspberry pi to sync my org files</h3>
+</section>
+<section id="slide-5-3">
+<h3 id="5-3"><span class="section-number-3">5.3.</span> display the relative positions of earth and sun</h3>
+<p>
+I found some guy&rsquo;s C++ code on the internet, &ldquo;just&rdquo;™ need to port the calculations
+</p>
+</section>
+<section id="slide-5-4">
+<h3 id="5-4"><span class="section-number-3">5.4.</span> clean up my code</h3>
+<ul>
+<li>do more formatting within emacs, before dumping the agenda to a text file</li>
+<li>I pass too many wrapper functions as positional args, I should just make a class</li>
+<li><del>rewrite in scheme for fun</del> j/k I&rsquo;m not made of free time</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-6">
+<h2 id="6"><span class="section-number-2">6.</span> Thanks</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="/home/jeet/.config/emacs/.local/straight/build-29.0.50/revealjs/dist/reveal.js"></script>
+<script src="/home/jeet/.config/emacs/.local/straight/build-29.0.50/revealjs/plugin/markdown/markdown.js"></script>
+<script src="/home/jeet/.config/emacs/.local/straight/build-29.0.50/revealjs/plugin/notes/notes.js"></script>
+<script src="/home/jeet/.config/emacs/.local/straight/build-29.0.50/revealjs/plugin/search/search.js"></script>
+<script src="/home/jeet/.config/emacs/.local/straight/build-29.0.50/revealjs/plugin/zoom/zoom.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+overview: true,
+
+transition: 'convex',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>
